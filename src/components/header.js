@@ -2,16 +2,16 @@ export function Header() {
   const el = document.createElement('nav');
   el.className = 'topnav';
   el.innerHTML = `
-    <a href="#/" data-route="/">Demo</a>
-    <a href="#/home" data-route="/home">Home</a>
-    <a href="#/auth" data-route="/auth">Login</a>
+    <a href="#/planner" data-route="/planner">Planner</a>
+    <a href="#/list" data-route="/list">Lista</a>
+    <a href="#/pantry" data-route="/pantry">Dispensa</a>
+    <a href="#/settings" data-route="/settings">Impostazioni</a>
     <span class="spacer"></span>
-    <span class="small">v0.1.0</span>
+    <span class="small">beta v0.2</span>
   `;
-  // Evidenzia la voce attiva
   const setActive = () => {
+    const path = (location.hash.slice(1) || '/planner').toLowerCase();
     el.querySelectorAll('a[data-route]').forEach(a => {
-      const path = location.hash.slice(1) || '/';
       a.classList.toggle('active', a.getAttribute('data-route') === path);
     });
   };
