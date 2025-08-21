@@ -1,5 +1,6 @@
 import { Header } from './components/Header.js';
 import { mount } from './router.js';
+import Start from './modules/start/index.js';
 import Planner from './modules/planner/index.js';
 import List from './modules/list/index.js';
 import Pantry from './modules/pantry/index.js';
@@ -11,7 +12,8 @@ const app = document.getElementById('app');
 header.appendChild(Header());
 
 const routes = {
-  '/': Planner,
+  '/': Start,          // 👈 pagina iniziale
+  '/start': Start,
   '/planner': Planner,
   '/list': List,
   '/pantry': Pantry,
