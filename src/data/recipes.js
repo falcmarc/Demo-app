@@ -157,7 +157,7 @@ export const RECIPES = [
   {
     id: 'spaghetti_vongole_fake',
     name: 'Spaghetti alle vongole (surg.)',
-    servings: 2, tags: ['pranzo'],
+    servings: 2, tags: ['pranzo','cena'],
     ingredients: [
       { item: 'spaghetti', qty: 180, unit: 'g' },
       { item: 'vongole surgelate', qty: 250, unit: 'g' },

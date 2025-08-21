@@ -16,45 +16,94 @@ function estimateCost(item, qty, unit){
   return (qty / p.per) * p.price;
 }
 
-// calcola "persone equivalenti" date le presenze e le età disponibili
-function eqForCounts(adults, kids, kidsAges){
+// ---- partecipazione/porzioni (coerente con Planner v3) ----
+function countsForMeal(settings, meal) {
+  const mode = settings?.participation?.[meal]?.mode || 'tutti';
+  const A = settings.adults || 0;
+  const K = settings.kids   || 0;
+
+  if (mode === 'nessuno') return { adults: 0, kids: 0 };
+  if (mode === 'solo_adulti') {
+    const a = meal==='pranzo' ? Math.max(0, A - (settings.adultsSkipLunch||0)) : A;
+    return { adults: a, kids: 0 };
+  }
+  if (mode === 'solo_bambini') {
+    const k = meal==='pranzo' ? Math.max(0, K - (settings.kidsSkipLunch||0)) : K;
+    return { adults: 0, kids: k };
+  }
+  if (mode === 'custom') {
+    const base = settings.participation?.[meal] || {};
+    return { adults: base.adults || 0, kids: base.kids || 0 };
+  }
+  // 'tutti'
+  const a = meal==='pranzo' ? Math.max(0, A - (settings.adultsSkipLunch||0)) : A;
+  const k = meal==='pranzo' ? Math.max(0, K - (settings.kidsSkipLunch||0))   : K;
+  return { adults: a, kids: k };
+}
+
+function eqServings(adults, kids, kidsAges){
   const ages = (kidsAges||[]).slice(0, Math.max(0, kids||0));
   const kidsEq = ages.reduce((sum,a)=> sum + kidFactor(a), 0);
   return Math.max(0, (adults||0) + kidsEq);
+}
+
+// ---- lettura piano (v3 con fallback a v2/v1) ----
+function readPlanV3() {
+  const v3 = load('app.plan.v3', null);
+  if (Array.isArray(v3) && v3[0]?.cena) return v3;
+  return null;
 }
 
 export default function List(){
   const s        = loadSettings();
   const allow    = dietPredicate(s);
 
-  // Leggi piano V2 (4 pasti) o V1 (fallback)
-  const planV2 = load('app.plan.v2', null);
-  const planV1 = planV2 ? null : load('app.plan', []);
-
   const need = {};
 
-  if (Array.isArray(planV2) && planV2[0]?.cena) {
-    // V2: 7 giorni * 4 pasti
-    planV2.forEach(day => {
-      ['colazione','pranzo','merenda','cena'].forEach(mealKey => {
-        const m = day[mealKey];
-        if (!m?.meal) return;
-        const r = RECIPES.find(x=>x.id===m.meal);
+  const planV3 = readPlanV3();
+  if (planV3) {
+    // V3: 7 giorni x 4 pasti, rispetta "excluded" e partecipazione da settings
+    const MEALS = ['colazione','pranzo','merenda','cena'];
+    planV3.forEach(day => {
+      MEALS.forEach(mealKey => {
+        const cell = day[mealKey];
+        if (!cell || cell.excluded || !cell.meal) return;
+
+        const r = RECIPES.find(x=>x.id===cell.meal);
         if(!r || !allow(r)) return;
-        const servings = eqForCounts(m.adults, m.kids, s.kidsAges);
+
+        const counts = countsForMeal(s, mealKey);
+        const servings = eqServings(counts.adults, counts.kids, s.kidsAges);
         const factor = (servings || 1) / (r.servings || 2);
+
         (r.ingredients || []).forEach(ing => add(need, ing.item, (ing.qty||0)*factor, ing.unit));
       });
     });
   } else {
-    // V1 (solo cena)
-    planV1.forEach(p=>{
-      if(!p?.meal) return;
-      const r = RECIPES.find(x=>x.id===p.meal);
-      if(!r || !allow(r)) return;
-      const factor = (p.servings || 2) / (r.servings || 2);
-      (r.ingredients||[]).forEach(ing => add(need, ing.item, (ing.qty||0)*factor, ing.unit));
-    });
+    // Fallback V2 (se presente) oppure V1 (storico)
+    const planV2 = load('app.plan.v2', null);
+    if (Array.isArray(planV2) && planV2[0]?.cena) {
+      planV2.forEach(day=>{
+        ['colazione','pranzo','merenda','cena'].forEach(mealKey=>{
+          const m = day[mealKey];
+          if(!m?.meal) return;
+          const r = RECIPES.find(x=>x.id===m.meal);
+          if(!r || !allow(r)) return;
+          const servings = eqServings(m.adults||0, m.kids||0, s.kidsAges);
+          const factor = (servings || 1) / (r.servings || 2);
+          (r.ingredients||[]).forEach(ing => add(need, ing.item, (ing.qty||0)*factor, ing.unit));
+        });
+      });
+    } else {
+      const planV1 = load('app.plan', []);
+      planV1.forEach(p=>{
+        if(!p?.meal) return;
+        const r = RECIPES.find(x=>x.id===p.meal);
+        if(!r || !allow(r)) return;
+        const factor = (p.servings || 2) / (r.servings || 2);
+        (r.ingredients||[]).forEach(ing => add(need, ing.item, (ing.qty||0)*factor, ing.unit));
+      });
+    }
   }
 
   // sottrai dispensa
@@ -65,6 +114,7 @@ export default function List(){
   });
 
   const items = Object.values(need).filter(x=>x.qty>0).sort((a,b)=>a.item.localeCompare(b.item));
+
   const totalCost = items.reduce((sum,x)=> sum + estimateCost(x.item, x.qty, x.unit), 0);
   const over = totalCost > (s.budget || 0);
 
