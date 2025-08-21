@@ -1,0 +1,204 @@
+[
+  {
+    "id": "col_pane_marm",
+    "name": "Pane e marmellata",
+    "servings": 2,
+    "tags": ["colazione","vegetariano"],
+    "ingredients": [
+      { "item": "Pane", "qty": 100, "unit": "g" },
+      { "item": "Marmellata", "qty": 40, "unit": "g" }
+    ]
+  },
+  {
+    "id": "col_cereali_lat",
+    "name": "Cereali con latte",
+    "servings": 2,
+    "tags": ["colazione","veloce"],
+    "ingredients": [
+      { "item": "Cereali", "qty": 80, "unit": "g" },
+      { "item": "Latte", "qty": 200, "unit": "ml" }
+    ]
+  },
+  {
+    "id": "col_yogurt_frutta",
+    "name": "Yogurt con frutta fresca",
+    "servings": 2,
+    "tags": ["colazione","leggero"],
+    "ingredients": [
+      { "item": "Yogurt bianco", "qty": 200, "unit": "g" },
+      { "item": "Frutta fresca", "qty": 150, "unit": "g" }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto",
+    "name": "Toast prosciutto e formaggio",
+    "servings": 2,
+    "tags": ["colazione","salato"],
+    "ingredients": [
+      { "item": "Pane per toast", "qty": 4, "unit": "fette" },
+      { "item": "Prosciutto cotto", "qty": 60, "unit": "g" },
+      { "item": "Formaggio", "qty": 40, "unit": "g" }
+    ]
+  },
+  {
+    "id": "col_smoothie",
+    "name": "Smoothie banana e fragola",
+    "servings": 2,
+    "tags": ["colazione","frutta"],
+    "ingredients": [
+      { "item": "Banana", "qty": 1, "unit": "pz" },
+      { "item": "Fragole", "qty": 150, "unit": "g" },
+      { "item": "Latte", "qty": 150, "unit": "ml" }
+    ]
+  },
+  {
+    "id": "pranzo_pasta_pomodoro",
+    "name": "Pasta al pomodoro",
+    "servings": 2,
+    "tags": ["pranzo","vegetariano"],
+    "ingredients": [
+      { "item": "Pasta", "qty": 180, "unit": "g" },
+      { "item": "Passata di pomodoro", "qty": 200, "unit": "g" }
+    ]
+  },
+  {
+    "id": "pranzo_risotto_funghi",
+    "name": "Risotto ai funghi",
+    "servings": 2,
+    "tags": ["pranzo","vegetariano"],
+    "ingredients": [
+      { "item": "Riso", "qty": 160, "unit": "g" },
+      { "item": "Funghi", "qty": 150, "unit": "g" }
+    ]
+  },
+  {
+    "id": "pranzo_pasta_pesto",
+    "name": "Pasta al pesto",
+    "servings": 2,
+    "tags": ["pranzo","vegetariano"],
+    "ingredients": [
+      { "item": "Pasta", "qty": 180, "unit": "g" },
+      { "item": "Pesto", "qty": 50, "unit": "g" }
+    ]
+  },
+  {
+    "id": "pranzo_bistecca",
+    "name": "Bistecca con insalata",
+    "servings": 2,
+    "tags": ["pranzo","carne"],
+    "ingredients": [
+      { "item": "Bistecca", "qty": 300, "unit": "g" },
+      { "item": "Insalata mista", "qty": 150, "unit": "g" }
+    ]
+  },
+  {
+    "id": "pranzo_pollo_curry",
+    "name": "Pollo al curry con riso",
+    "servings": 2,
+    "tags": ["pranzo","carne"],
+    "ingredients": [
+      { "item": "Petto di pollo", "qty": 250, "unit": "g" },
+      { "item": "Riso basmati", "qty": 160, "unit": "g" }
+    ]
+  },
+  {
+    "id": "mer_frutta",
+    "name": "Frutta fresca di stagione",
+    "servings": 2,
+    "tags": ["merenda","leggero"],
+    "ingredients": [
+      { "item": "Frutta", "qty": 200, "unit": "g" }
+    ]
+  },
+  {
+    "id": "mer_panino",
+    "name": "Panino con prosciutto",
+    "servings": 2,
+    "tags": ["merenda","salato"],
+    "ingredients": [
+      { "item": "Pane", "qty": 80, "unit": "g" },
+      { "item": "Prosciutto crudo", "qty": 50, "unit": "g" }
+    ]
+  },
+  {
+    "id": "mer_biscotti",
+    "name": "Biscotti e succo",
+    "servings": 2,
+    "tags": ["merenda","dolce"],
+    "ingredients": [
+      { "item": "Biscotti", "qty": 60, "unit": "g" },
+      { "item": "Succo di frutta", "qty": 200, "unit": "ml" }
+    ]
+  },
+  {
+    "id": "mer_yogurt_cereali",
+    "name": "Yogurt e cereali",
+    "servings": 2,
+    "tags": ["merenda","veloce"],
+    "ingredients": [
+      { "item": "Yogurt bianco", "qty": 200, "unit": "g" },
+      { "item": "Cereali", "qty": 60, "unit": "g" }
+    ]
+  },
+  {
+    "id": "mer_toast",
+    "name": "Toast veloce",
+    "servings": 2,
+    "tags": ["merenda","salato"],
+    "ingredients": [
+      { "item": "Pane per toast", "qty": 2, "unit": "fette" },
+      { "item": "Formaggio", "qty": 30, "unit": "g" }
+    ]
+  },
+  {
+    "id": "cena_pollo_patate",
+    "name": "Pollo arrosto con patate",
+    "servings": 2,
+    "tags": ["cena","carne"],
+    "ingredients": [
+      { "item": "Pollo", "qty": 300, "unit": "g" },
+      { "item": "Patate", "qty": 250, "unit": "g" }
+    ]
+  },
+  {
+    "id": "cena_pesce_forno",
+    "name": "Pesce al forno con verdure",
+    "servings": 2,
+    "tags": ["cena","pesce"],
+    "ingredients": [
+      { "item": "Filetto di pesce", "qty": 300, "unit": "g" },
+      { "item": "Verdure miste", "qty": 200, "unit": "g" }
+    ]
+  },
+  {
+    "id": "cena_zuppe",
+    "name": "Zuppa di verdure",
+    "servings": 2,
+    "tags": ["cena","vegetariano"],
+    "ingredients": [
+      { "item": "Verdure miste", "qty": 300, "unit": "g" }
+    ]
+  },
+  {
+    "id": "cena_pizza",
+    "name": "Pizza margherita",
+    "servings": 2,
+    "tags": ["cena","pizza"],
+    "ingredients": [
+      { "item": "Impasto pizza", "qty": 400, "unit": "g" },
+      { "item": "Mozzarella", "qty": 150, "unit": "g" },
+      { "item": "Pomodoro", "qty": 100, "unit": "g" }
+    ]
+  },
+  {
+    "id": "cena_carbonara",
+    "name": "Spaghetti alla carbonara",
+    "servings": 2,
+    "tags": ["cena","pasta"],
+    "ingredients": [
+      { "item": "Spaghetti", "qty": 180, "unit": "g" },
+      { "item": "Guanciale", "qty": 80, "unit": "g" },
+      { "item": "Uova", "qty": 2, "unit": "pz" }
+    ]
+  }
+]

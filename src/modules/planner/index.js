@@ -1,144 +1,136 @@
 // src/modules/planner/index.js
-import { RECIPES } from '../../data/recipes.js';
+import { getRecipes } from '../../data/recipes.js';
 import { loadSettings, dietPredicate, kidFactor } from '../../lib/utils.js';
 
-const DAYS  = ['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
+// giorni e pasti
+const DAYS = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
 const MEALS = ['colazione','pranzo','merenda','cena'];
 
-function countsForMeal(settings, meal) {
-  const mode = settings?.participation?.[meal]?.mode || 'tutti';
-  const A = settings.adults || 0;
-  const K = settings.kids   || 0;
+const key = 'app.plan.v3';
+const getPlan = () => JSON.parse(localStorage.getItem(key) || 'null');
+const setPlan = (plan) => localStorage.setItem(key, JSON.stringify(plan));
 
-  if (mode === 'nessuno') return { adults: 0, kids: 0 };
-  if (mode === 'solo_adulti') {
-    const a = meal==='pranzo' ? Math.max(0, A - (settings.adultsSkipLunch||0)) : A;
-    return { adults: a, kids: 0 };
-  }
-  if (mode === 'solo_bambini') {
-    const k = meal==='pranzo' ? Math.max(0, K - (settings.kidsSkipLunch||0)) : K;
-    return { adults: 0, kids: k };
-  }
-  if (mode === 'custom') {
-    const base = settings.participation[meal];
-    return { adults: base.adults || 0, kids: base.kids || 0 };
-  }
-  // 'tutti'
-  const a = meal==='pranzo' ? Math.max(0, A - (settings.adultsSkipLunch||0)) : A;
-  const k = meal==='pranzo' ? Math.max(0, K - (settings.kidsSkipLunch||0))   : K;
-  return { adults: a, kids: k };
+// genera un nuovo piano vuoto
+function emptyPlan(){
+  return DAYS.map(()=> {
+    const obj = {};
+    MEALS.forEach(m => obj[m] = { meal:null, excluded:false });
+    return obj;
+  });
 }
 
-function equivalents(adults, kids, kidsAges) {
-  const ages = (kidsAges||[]).slice(0, Math.max(0, kids||0));
-  const kidsEq = ages.reduce((sum,a)=> sum + kidFactor(a), 0);
-  return Math.max(0, (adults||0) + kidsEq);
+// funzione per generare menu bilanciato
+function generateBalancedWeeklyMenu(recipes, settings){
+  const allow = dietPredicate(settings);
+  const allowedRecipes = recipes.filter(allow);
+
+  // raggruppa per tipo pasto (tag)
+  const byMeal = {};
+  MEALS.forEach(m => byMeal[m] = allowedRecipes.filter(r => r.tags?.includes(m)));
+
+  // distribuisci ricette per 7 giorni
+  const plan = emptyPlan();
+  plan.forEach(day=>{
+    MEALS.forEach(m=>{
+      const pool = byMeal[m].length ? byMeal[m] : allowedRecipes;
+      const pick = pool[Math.floor(Math.random()*pool.length)];
+      day[m] = { meal: pick?.id || null, excluded:false };
+    });
+  });
+  return plan;
 }
 
-function emptyPlanV3() {
-  return DAYS.map(()=>Object.fromEntries(MEALS.map(m=>[m, { meal:null, excluded:false } ])));
-}
-
-function migrateAnyToV3() {
-  try {
-    const v3 = JSON.parse(localStorage.getItem('app.plan.v3')||'null');
-    if (Array.isArray(v3) && v3[0]?.cena) return v3;
-  } catch {}
-  // migra da v2/v1 → solo cene
-  let base = emptyPlanV3();
-  try {
-    const v2 = JSON.parse(localStorage.getItem('app.plan.v2')||'null');
-    if (Array.isArray(v2) && v2[0]?.cena) {
-      v2.forEach((d,i)=>{ base[i].cena.meal = d.cena?.meal || null; });
-      localStorage.setItem('app.plan.v3', JSON.stringify(base));
-      return base;
-    }
-  } catch {}
-  try {
-    const v1 = JSON.parse(localStorage.getItem('app.plan')||'null');
-    if (Array.isArray(v1) && v1[0]?.meal !== undefined) {
-      v1.forEach((d,i)=>{ base[i].cena.meal = d.meal || null; });
-      localStorage.setItem('app.plan.v3', JSON.stringify(base));
-      return base;
-    }
-  } catch {}
-  localStorage.setItem('app.plan.v3', JSON.stringify(base));
-  return base;
-}
-
-export default function Planner() {
+export default function Planner(){
   const settings = loadSettings();
-  const allowDiet = dietPredicate(settings);
-  const planKey = 'app.plan.v3';
-  const setPlan = (v)=> localStorage.setItem(planKey, JSON.stringify(v));
-  const getPlan = ()=> JSON.parse(localStorage.getItem(planKey) || 'null') || migrateAnyToV3();
+  let RECIPES = [];
 
   const el = document.createElement('div');
   el.className = 'card';
   el.innerHTML = `
     <h1>Planner settimanale</h1>
     <div class="small" style="margin-bottom:8px">
-      Dieta: <strong>${settings.diet}</strong> · Giorno spesa: <strong>${settings.shoppingDay}</strong>
-      · Partecipazione: definita in <a href="#/start">Start</a>
+      Dieta: <strong>${settings.diet}</strong> · Persone: <strong>${settings.adults} + ${settings.kids} bambini</strong> · Giorno spesa: <strong>${settings.shoppingDay}</strong>
     </div>
-    <div id="grid" class="table"></div>
+    <div class="toolbar" style="display:flex; gap:8px; margin-bottom:12px">
+      <button id="reset" class="btn secondary">Azzera</button>
+      <button id="auto" class="btn">Precompila bilanciato</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="planner" style="border-collapse:collapse; width:100%; text-align:center">
+        <thead>
+          <tr>
+            <th>Giorno</th>
+            ${MEALS.map(m=>`<th style="padding:6px">${m}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
   `;
 
-  const grid = el.querySelector('#grid');
+  const tbody = el.querySelector('#tbody');
 
-  function render() {
-    const plan = getPlan();
-    const allowed = RECIPES.filter(allowDiet);
-    grid.innerHTML = '';
+  // renderizza la tabella
+  async function render(){
+    if (!RECIPES.length) RECIPES = await getRecipes();
 
-    // intestazione
-    const head = document.createElement('div'); head.className='row head';
-    head.innerHTML = `<div class="cell" style="min-width:120px">Pasto</div>` +
-      DAYS.map(d=>`<div class="cell">${d}</div>`).join('');
-    grid.appendChild(head);
+    let plan = getPlan();
+    if (!plan) { plan = emptyPlan(); setPlan(plan); }
 
-    MEALS.forEach(meal=>{
-      const row = document.createElement('div'); row.className='row';
+    tbody.innerHTML = '';
+    plan.forEach((day, dIdx)=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td style="padding:6px; font-weight:bold">${DAYS[dIdx]}</td>`;
+      MEALS.forEach(m=>{
+        const cell = document.createElement('td');
+        cell.style.padding = '4px';
 
-      // label pasto
-      const c0 = document.createElement('div'); c0.className='cell'; c0.textContent = meal[0].toUpperCase()+meal.slice(1);
-      row.appendChild(c0);
+        // select ricette
+        const sel = document.createElement('select');
+        sel.className = 'input';
+        sel.innerHTML = `<option value="">—</option>` + RECIPES.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
+        sel.value = day[m].meal || '';
 
-      DAYS.forEach((_, dayIdx)=>{
-        const cell = document.createElement('div'); cell.className='cell';
-        const p = plan[dayIdx][meal];
-        const counts = countsForMeal(settings, meal);
-        const servEq = p.excluded ? 0 : equivalents(counts.adults, counts.kids, settings.kidsAges);
-
-        // UI cella: select + porzioni + exclude
-        const sel = document.createElement('select'); sel.className='input'; sel.style.width='100%';
-        sel.innerHTML = `<option value="">— ricetta —</option>` + allowed.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
-        sel.value = p.meal || '';
-        sel.disabled = p.excluded;
-
-        const meta = document.createElement('div'); meta.className='small';
-        meta.textContent = p.excluded ? 'Escluso' : `Porzioni: ${servEq.toFixed(1)} (A:${counts.adults} K:${counts.kids})`;
-
-        const ex = document.createElement('label'); ex.className='small';
-        ex.style.display='flex'; ex.style.gap='6px'; ex.style.alignItems='center'; ex.style.marginTop='6px';
-        const chk = document.createElement('input'); chk.type='checkbox'; chk.checked = !!p.excluded;
-        ex.append(chk, document.createTextNode('Escludi'));
-
-        // events
         sel.addEventListener('change', ()=>{
-          const pp = getPlan(); pp[dayIdx][meal].meal = sel.value || null; setPlan(pp);
-        });
-        chk.addEventListener('change', ()=>{
-          const pp = getPlan(); pp[dayIdx][meal].excluded = chk.checked; setPlan(pp); render();
+          plan[dIdx][m].meal = sel.value || null;
+          setPlan(plan);
         });
 
-        cell.append(sel, meta, ex);
-        row.appendChild(cell);
+        // checkbox esclusione
+        const ex = document.createElement('input');
+        ex.type = 'checkbox';
+        ex.checked = !!day[m].excluded;
+        ex.title = "Escludi questo pasto";
+        ex.addEventListener('change', ()=>{
+          plan[dIdx][m].excluded = ex.checked;
+          setPlan(plan);
+        });
+
+        cell.appendChild(sel);
+        cell.appendChild(document.createElement('br'));
+        cell.appendChild(ex);
+        cell.appendChild(document.createTextNode(' escl.'));
+
+        tr.appendChild(cell);
       });
-
-      grid.appendChild(row);
+      tbody.appendChild(tr);
     });
   }
+
+  // reset
+  el.querySelector('#reset').addEventListener('click', ()=>{
+    const plan = emptyPlan();
+    setPlan(plan);
+    render();
+  });
+
+  // precompila bilanciato
+  el.querySelector('#auto').addEventListener('click', async ()=>{
+    if (!RECIPES.length) RECIPES = await getRecipes();
+    const plan = generateBalancedWeeklyMenu(RECIPES, settings);
+    setPlan(plan);
+    render();
+  });
 
   render();
   return el;
