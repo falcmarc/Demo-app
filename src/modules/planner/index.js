@@ -1,5 +1,6 @@
 import { RECIPES } from '../../data/recipes.js';
 import { loadSettings, equivalents, dietPredicate } from '../../lib/utils.js';
+import { generateOfficialWeeklyPlan } from '../../lib/menu.js';
 
 const days = ['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
 
@@ -18,18 +19,18 @@ export default function Planner() {
   const el = document.createElement('div');
   el.className = 'card';
   el.innerHTML = `
-    <h1>Planner settimanale</h1>
-    <div class="small" style="margin-bottom:8px">
-      Dieta: <strong>${s.diet}</strong> · Persone eq: <strong>${eq}</strong> · Giorno spesa: <strong>${s.shoppingDay}</strong>
-    </div>
+  <h1>Planner settimanale</h1>
+  <div class="small" style="margin-bottom:8px">
+    Dieta: <strong>${settings.diet}</strong> · Persone eq: <strong>${eq}</strong> · Giorno spesa: <strong>${settings.shoppingDay}</strong>
+  </div>
 
-    <div style="display:grid; gap:10px; grid-template-columns: 1fr auto; align-items:center; margin-bottom:8px">
-      <input id="q" class="input" placeholder="Cerca ricetta (nome o ingrediente)..." />
-      <div id="tags" style="display:flex; gap:6px; flex-wrap:wrap"></div>
-    </div>
+  <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px">
+    <button id="regen" class="btn">Rigenera menu</button>
+    <span class="small">Crea una nuova proposta evitando ripetizioni consecutive.</span>
+  </div>
 
-    <div id="grid" style="display:grid; gap:10px; grid-template-columns: 100px 1fr 100px"></div>
-  `;
+  <div id="grid" style="display:grid; gap:10px; grid-template-columns: 100px 1fr 100px"></div>
+`;
 
   // render chip tag
   const tagsBox = el.querySelector('#tags');
@@ -61,6 +62,12 @@ export default function Planner() {
         (r.ingredients || []).some(i => (i.item || '').toLowerCase().includes(q))
       );
   }
+
+  el.querySelector('#regen').addEventListener('click', ()=>{
+  const plan = generateOfficialWeeklyPlan();
+  localStorage.setItem('app.plan', JSON.stringify(plan));
+  render();
+});
 
   const render = () => {
     const plan = get();
