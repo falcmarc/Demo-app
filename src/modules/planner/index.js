@@ -18,10 +18,11 @@ export default function Planner() {
 
   const el = document.createElement('div');
   el.className = 'card';
-  el.innerHTML = `
+
+el.innerHTML = `
   <h1>Planner settimanale</h1>
   <div class="small" style="margin-bottom:8px">
-    Dieta: <strong>${settings.diet}</strong> · Persone eq: <strong>${eq}</strong> · Giorno spesa: <strong>${settings.shoppingDay}</strong>
+    Dieta: <strong>${s.diet}</strong> · Persone eq: <strong>${eq}</strong> · Giorno spesa: <strong>${s.shoppingDay}</strong>
   </div>
 
   <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px">
