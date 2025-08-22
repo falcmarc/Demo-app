@@ -2,18 +2,19 @@
 //
 // Loader ricette con doppio supporto:
 // - recipes.json (ricette esplicite)
-// - recipes.compact.json (template che espandiamo in 150+ ricette)
+// - recipes.compact.json (template -> 150+ ricette)
+// Usa URL relativi alla cartella del file grazie a import.meta.url (niente più 404).
 //
 // Esporta:
-//   - let RECIPES = []                   (compatibilità per vecchi import)
-//   - async function getRecipes()        (API consigliata)
-//   - async function loadRecipes()       (popola RECIPES e cache)
-//   - function setRecipesURLs(urls[])    (opzionale: puntare a URL esterni)
-//
+//   - let RECIPES = []                   (compat legacy)
+//   - async function getRecipes()
+//   - async function loadRecipes()
+//   - function setRecipesURLs(urls[])    (per puntare a URL esterni se vuoi)
 
+const BASE = new URL('.', import.meta.url); // -> .../src/data/
 const DEFAULT_URLS = [
-  './recipes.json?v=1',          // esplicite (opzionale)
-  './recipes.compact.json?v=1'   // template -> 150+ ricette
+  new URL('recipes.json?v=2', BASE).href,          // es: /src/data/recipes.json
+  new URL('recipes.compact.json?v=1', BASE).href,  // es: /src/data/recipes.compact.json
 ];
 
 const LS_KEY_URLS  = 'app.recipes.urls';   // JSON array di URL
@@ -227,11 +228,9 @@ export async function loadRecipes(){
 }
 
 export async function getRecipes(){
-  // se abbiamo già popolato RECIPES, restituiamo subito
   if (RECIPES && RECIPES.length) return RECIPES;
   return loadRecipes();
 }
 
-// kick-off non bloccante: prova a caricare in background
-// (i moduli che vogliono i dati subito usino getRecipes())
-loadRecipes().catch(()=>{ /* silenzio, gestiamo a richiesta */ });
+// tentativo non bloccante
+loadRecipes().catch(()=>{});
