@@ -1,0 +1,2431 @@
+[
+  {
+    "id": "col_yogurt_con_frutta_e_miele_con_granella_di_nocciole",
+    "name": "Yogurt Con Frutta E Miele Con Granella Di Nocciole",
+    "servings": 1,
+    "kcalPerServing": 275,
+    "tags": [
+      "colazione",
+      "latticini",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 150,
+        "unit": "g"
+      },
+      {
+        "item": "Frutta fresca",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      },
+      {
+        "item": "Granella di nocciole",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_con_semi_misti",
+    "name": "Uova Strapazzate Con Toast Con Semi Misti",
+    "servings": 1,
+    "kcalPerServing": 320,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      },
+      {
+        "item": "Semi misti",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_yogurt_con_frutta_e_miele_con_cannella",
+    "name": "Yogurt Con Frutta E Miele Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 225,
+    "tags": [
+      "colazione",
+      "latticini",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 150,
+        "unit": "g"
+      },
+      {
+        "item": "Frutta fresca",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_con_granella_di_nocciole",
+    "name": "Cappuccino E Brioche Con Granella Di Nocciole",
+    "servings": 1,
+    "kcalPerServing": 352,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Granella di nocciole",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_con_granella_di_nocciole",
+    "name": "Uova Strapazzate Con Toast Con Granella Di Nocciole",
+    "servings": 1,
+    "kcalPerServing": 365,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      },
+      {
+        "item": "Granella di nocciole",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_porridge_avena_e_frutta_light",
+    "name": "Porridge Avena E Frutta Light",
+    "servings": 1,
+    "kcalPerServing": 215,
+    "tags": [
+      "colazione",
+      "vegetariano"
+    ],
+    "ingredients": [
+      {
+        "item": "Fiocchi di avena",
+        "qty": 50,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Frutta secca",
+        "qty": 20,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cornetto_integrale_e_spremuta_al_miele",
+    "name": "Cornetto Integrale E Spremuta Al Miele",
+    "servings": 1,
+    "kcalPerServing": 355,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Cornetto integrale",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Spremuta d'arancia",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_con_cacao",
+    "name": "Cappuccino E Brioche Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 382,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_latte_al_miele",
+    "name": "Cereali Con Latte Al Miele",
+    "servings": 1,
+    "kcalPerServing": 294,
+    "tags": [
+      "colazione",
+      "veloce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_latte_con_cannella",
+    "name": "Cereali Con Latte Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 271,
+    "tags": [
+      "colazione",
+      "veloce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "col_yogurt_con_frutta_e_miele_al_pistacchio",
+    "name": "Yogurt Con Frutta E Miele Al Pistacchio",
+    "servings": 1,
+    "kcalPerServing": 293,
+    "tags": [
+      "colazione",
+      "latticini",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 150,
+        "unit": "g"
+      },
+      {
+        "item": "Frutta fresca",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      },
+      {
+        "item": "Crema di pistacchio",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cornetto_integrale_e_spremuta_al_miele_2",
+    "name": "Cornetto Integrale E Spremuta Al Miele",
+    "servings": 1,
+    "kcalPerServing": 354,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Cornetto integrale",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Spremuta d'arancia",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto_e_formaggio_con_cannella",
+    "name": "Toast Prosciutto E Formaggio Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 412,
+    "tags": [
+      "colazione",
+      "salato",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane per toast",
+        "qty": 2,
+        "unit": "fette"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_bevanda_vegetale_con_cannella",
+    "name": "Cereali Con Bevanda Vegetale Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 263,
+    "tags": [
+      "colazione",
+      "veloce",
+      "vegano",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Bevanda di mandorla",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "col_cornetto_integrale_e_spremuta_al_pistacchio",
+    "name": "Cornetto Integrale E Spremuta Al Pistacchio",
+    "servings": 1,
+    "kcalPerServing": 367,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Cornetto integrale",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Spremuta d'arancia",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Crema di pistacchio",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_yogurt_con_frutta_e_miele_con_granella_di_nocciole_2",
+    "name": "Yogurt Con Frutta E Miele Con Granella Di Nocciole",
+    "servings": 1,
+    "kcalPerServing": 270,
+    "tags": [
+      "colazione",
+      "latticini",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 150,
+        "unit": "g"
+      },
+      {
+        "item": "Frutta fresca",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      },
+      {
+        "item": "Granella di nocciole",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_smoothie_banana_e_fragola_con_cannella",
+    "name": "Smoothie Banana E Fragola Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 250,
+    "tags": [
+      "colazione",
+      "frutta",
+      "vegano",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Banana",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Fragole",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Bevanda di soia",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "col_yogurt_con_frutta_e_miele_light",
+    "name": "Yogurt Con Frutta E Miele Light",
+    "servings": 1,
+    "kcalPerServing": 151,
+    "tags": [
+      "colazione",
+      "latticini",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 150,
+        "unit": "g"
+      },
+      {
+        "item": "Frutta fresca",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_latte_con_cacao",
+    "name": "Cereali Con Latte Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 305,
+    "tags": [
+      "colazione",
+      "veloce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_al_miele",
+    "name": "Uova Strapazzate Con Toast Al Miele",
+    "servings": 1,
+    "kcalPerServing": 356,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_yogurt_con_frutta_e_miele_con_cacao",
+    "name": "Yogurt Con Frutta E Miele Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 237,
+    "tags": [
+      "colazione",
+      "latticini",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 150,
+        "unit": "g"
+      },
+      {
+        "item": "Frutta fresca",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_con_cacao",
+    "name": "Uova Strapazzate Con Toast Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 332,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_smoothie_banana_e_fragola_con_semi_misti",
+    "name": "Smoothie Banana E Fragola Con Semi Misti",
+    "servings": 1,
+    "kcalPerServing": 272,
+    "tags": [
+      "colazione",
+      "frutta",
+      "vegano",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Banana",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Fragole",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Bevanda di soia",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Semi misti",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_con_semi_misti",
+    "name": "Cappuccino E Brioche Con Semi Misti",
+    "servings": 1,
+    "kcalPerServing": 409,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Semi misti",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_latte_light",
+    "name": "Cereali Con Latte Light",
+    "servings": 1,
+    "kcalPerServing": 227,
+    "tags": [
+      "colazione",
+      "veloce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_al_pistacchio",
+    "name": "Uova Strapazzate Con Toast Al Pistacchio",
+    "servings": 1,
+    "kcalPerServing": 344,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      },
+      {
+        "item": "Crema di pistacchio",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto_e_formaggio_light",
+    "name": "Toast Prosciutto E Formaggio Light",
+    "servings": 1,
+    "kcalPerServing": 339,
+    "tags": [
+      "colazione",
+      "salato",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane per toast",
+        "qty": 2,
+        "unit": "fette"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto_e_formaggio_con_cacao",
+    "name": "Toast Prosciutto E Formaggio Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 363,
+    "tags": [
+      "colazione",
+      "salato",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane per toast",
+        "qty": 2,
+        "unit": "fette"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio",
+        "qty": 30,
+        "unit": "g"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_al_miele_2",
+    "name": "Uova Strapazzate Con Toast Al Miele",
+    "servings": 1,
+    "kcalPerServing": 360,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_bevanda_vegetale_light",
+    "name": "Cereali Con Bevanda Vegetale Light",
+    "servings": 1,
+    "kcalPerServing": 193,
+    "tags": [
+      "colazione",
+      "veloce",
+      "vegano",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Bevanda di mandorla",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "col_pancake_con_sciroppo_proteico",
+    "name": "Pancake Con Sciroppo Proteico",
+    "servings": 1,
+    "kcalPerServing": 397,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Farina",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Uova",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Latte",
+        "qty": 80,
+        "unit": "ml"
+      },
+      {
+        "item": "Sciroppo d'acero",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Proteine in polvere",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_con_cannella",
+    "name": "Cappuccino E Brioche Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 321,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      }
+    ]
+  },
+  {
+    "id": "col_pancake_con_sciroppo_light",
+    "name": "Pancake Con Sciroppo Light",
+    "servings": 1,
+    "kcalPerServing": 327,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Farina",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Uova",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Latte",
+        "qty": 80,
+        "unit": "ml"
+      },
+      {
+        "item": "Sciroppo d'acero",
+        "qty": 20,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_bevanda_vegetale_light_2",
+    "name": "Cereali Con Bevanda Vegetale Light",
+    "servings": 1,
+    "kcalPerServing": 205,
+    "tags": [
+      "colazione",
+      "veloce",
+      "vegano",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Bevanda di mandorla",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto_e_formaggio_al_miele",
+    "name": "Toast Prosciutto E Formaggio Al Miele",
+    "servings": 1,
+    "kcalPerServing": 434,
+    "tags": [
+      "colazione",
+      "salato",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane per toast",
+        "qty": 2,
+        "unit": "fette"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio",
+        "qty": 30,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_con_cannella_2",
+    "name": "Cappuccino E Brioche Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 365,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      }
+    ]
+  },
+  {
+    "id": "col_porridge_avena_e_frutta_al_miele",
+    "name": "Porridge Avena E Frutta Al Miele",
+    "servings": 1,
+    "kcalPerServing": 330,
+    "tags": [
+      "colazione",
+      "vegetariano"
+    ],
+    "ingredients": [
+      {
+        "item": "Fiocchi di avena",
+        "qty": 50,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Frutta secca",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_latte_con_cannella_2",
+    "name": "Cereali Con Latte Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 285,
+    "tags": [
+      "colazione",
+      "veloce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "col_pancake_con_sciroppo_proteico_2",
+    "name": "Pancake Con Sciroppo Proteico",
+    "servings": 1,
+    "kcalPerServing": 388,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Farina",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Uova",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Latte",
+        "qty": 80,
+        "unit": "ml"
+      },
+      {
+        "item": "Sciroppo d'acero",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Proteine in polvere",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_smoothie_banana_e_fragola_con_cacao",
+    "name": "Smoothie Banana E Fragola Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 245,
+    "tags": [
+      "colazione",
+      "frutta",
+      "vegano",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Banana",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Fragole",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Bevanda di soia",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_yogurt_con_frutta_e_miele_al_miele",
+    "name": "Yogurt Con Frutta E Miele Al Miele",
+    "servings": 1,
+    "kcalPerServing": 260,
+    "tags": [
+      "colazione",
+      "latticini",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 150,
+        "unit": "g"
+      },
+      {
+        "item": "Frutta fresca",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_porridge_avena_e_frutta_con_semi_misti",
+    "name": "Porridge Avena E Frutta Con Semi Misti",
+    "servings": 1,
+    "kcalPerServing": 293,
+    "tags": [
+      "colazione",
+      "vegetariano"
+    ],
+    "ingredients": [
+      {
+        "item": "Fiocchi di avena",
+        "qty": 50,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Frutta secca",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Semi misti",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_pancake_con_sciroppo_con_granella_di_nocciole",
+    "name": "Pancake Con Sciroppo Con Granella Di Nocciole",
+    "servings": 1,
+    "kcalPerServing": 430,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Farina",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Uova",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Latte",
+        "qty": 80,
+        "unit": "ml"
+      },
+      {
+        "item": "Sciroppo d'acero",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Granella di nocciole",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto_e_formaggio_con_granella_di_nocciole",
+    "name": "Toast Prosciutto E Formaggio Con Granella Di Nocciole",
+    "servings": 1,
+    "kcalPerServing": 372,
+    "tags": [
+      "colazione",
+      "salato",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane per toast",
+        "qty": 2,
+        "unit": "fette"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio",
+        "qty": 30,
+        "unit": "g"
+      },
+      {
+        "item": "Granella di nocciole",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_latte_al_miele_2",
+    "name": "Cereali Con Latte Al Miele",
+    "servings": 1,
+    "kcalPerServing": 300,
+    "tags": [
+      "colazione",
+      "veloce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_con_cannella",
+    "name": "Uova Strapazzate Con Toast Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 288,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto_e_formaggio_con_cannella_2",
+    "name": "Toast Prosciutto E Formaggio Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 412,
+    "tags": [
+      "colazione",
+      "salato",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane per toast",
+        "qty": 2,
+        "unit": "fette"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_porridge_avena_e_frutta_con_cacao",
+    "name": "Porridge Avena E Frutta Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 278,
+    "tags": [
+      "colazione",
+      "vegetariano"
+    ],
+    "ingredients": [
+      {
+        "item": "Fiocchi di avena",
+        "qty": 50,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Frutta secca",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto_e_formaggio_con_cacao_2",
+    "name": "Toast Prosciutto E Formaggio Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 363,
+    "tags": [
+      "colazione",
+      "salato",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane per toast",
+        "qty": 2,
+        "unit": "fette"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio",
+        "qty": 30,
+        "unit": "g"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cornetto_integrale_e_spremuta_light",
+    "name": "Cornetto Integrale E Spremuta Light",
+    "servings": 1,
+    "kcalPerServing": 278,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Cornetto integrale",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Spremuta d'arancia",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "col_porridge_avena_e_frutta_con_semi_misti_2",
+    "name": "Porridge Avena E Frutta Con Semi Misti",
+    "servings": 1,
+    "kcalPerServing": 336,
+    "tags": [
+      "colazione",
+      "vegetariano"
+    ],
+    "ingredients": [
+      {
+        "item": "Fiocchi di avena",
+        "qty": 50,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Frutta secca",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Semi misti",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_bevanda_vegetale_al_pistacchio",
+    "name": "Cereali Con Bevanda Vegetale Al Pistacchio",
+    "servings": 1,
+    "kcalPerServing": 305,
+    "tags": [
+      "colazione",
+      "veloce",
+      "vegano",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Bevanda di mandorla",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Crema di pistacchio",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_porridge_avena_e_frutta_proteico",
+    "name": "Porridge Avena E Frutta Proteico",
+    "servings": 1,
+    "kcalPerServing": 318,
+    "tags": [
+      "colazione",
+      "vegetariano"
+    ],
+    "ingredients": [
+      {
+        "item": "Fiocchi di avena",
+        "qty": 50,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Frutta secca",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Proteine in polvere",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_con_cannella_2",
+    "name": "Uova Strapazzate Con Toast Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 308,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cornetto_integrale_e_spremuta_con_semi_misti",
+    "name": "Cornetto Integrale E Spremuta Con Semi Misti",
+    "servings": 1,
+    "kcalPerServing": 347,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Cornetto integrale",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Spremuta d'arancia",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Semi misti",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_con_cannella_3",
+    "name": "Cappuccino E Brioche Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 367,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_con_semi_misti_2",
+    "name": "Cappuccino E Brioche Con Semi Misti",
+    "servings": 1,
+    "kcalPerServing": 341,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Semi misti",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_al_pistacchio",
+    "name": "Cappuccino E Brioche Al Pistacchio",
+    "servings": 1,
+    "kcalPerServing": 359,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Crema di pistacchio",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_al_miele_3",
+    "name": "Uova Strapazzate Con Toast Al Miele",
+    "servings": 1,
+    "kcalPerServing": 354,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_con_cacao_2",
+    "name": "Uova Strapazzate Con Toast Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 353,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cornetto_integrale_e_spremuta_proteico",
+    "name": "Cornetto Integrale E Spremuta Proteico",
+    "servings": 1,
+    "kcalPerServing": 347,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Cornetto integrale",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Spremuta d'arancia",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Proteine in polvere",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto_e_formaggio_light_2",
+    "name": "Toast Prosciutto E Formaggio Light",
+    "servings": 1,
+    "kcalPerServing": 287,
+    "tags": [
+      "colazione",
+      "salato",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane per toast",
+        "qty": 2,
+        "unit": "fette"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_yogurt_con_frutta_e_miele_light_2",
+    "name": "Yogurt Con Frutta E Miele Light",
+    "servings": 1,
+    "kcalPerServing": 154,
+    "tags": [
+      "colazione",
+      "latticini",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 150,
+        "unit": "g"
+      },
+      {
+        "item": "Frutta fresca",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_bevanda_vegetale_proteico",
+    "name": "Cereali Con Bevanda Vegetale Proteico",
+    "servings": 1,
+    "kcalPerServing": 348,
+    "tags": [
+      "colazione",
+      "veloce",
+      "vegano",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Bevanda di mandorla",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Proteine in polvere",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_con_cannella_4",
+    "name": "Cappuccino E Brioche Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 313,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_latte_con_cannella_3",
+    "name": "Cereali Con Latte Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 282,
+    "tags": [
+      "colazione",
+      "veloce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_proteico",
+    "name": "Uova Strapazzate Con Toast Proteico",
+    "servings": 1,
+    "kcalPerServing": 347,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      },
+      {
+        "item": "Proteine in polvere",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_pancake_con_sciroppo_al_miele",
+    "name": "Pancake Con Sciroppo Al Miele",
+    "servings": 1,
+    "kcalPerServing": 396,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Farina",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Uova",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Latte",
+        "qty": 80,
+        "unit": "ml"
+      },
+      {
+        "item": "Sciroppo d'acero",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_yogurt_con_frutta_e_miele_proteico",
+    "name": "Yogurt Con Frutta E Miele Proteico",
+    "servings": 1,
+    "kcalPerServing": 301,
+    "tags": [
+      "colazione",
+      "latticini",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 150,
+        "unit": "g"
+      },
+      {
+        "item": "Frutta fresca",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      },
+      {
+        "item": "Proteine in polvere",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_porridge_avena_e_frutta_con_cannella",
+    "name": "Porridge Avena E Frutta Con Cannella",
+    "servings": 1,
+    "kcalPerServing": 259,
+    "tags": [
+      "colazione",
+      "vegetariano"
+    ],
+    "ingredients": [
+      {
+        "item": "Fiocchi di avena",
+        "qty": 50,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Frutta secca",
+        "qty": 20,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_porridge_avena_e_frutta_con_granella_di_nocciole",
+    "name": "Porridge Avena E Frutta Con Granella Di Nocciole",
+    "servings": 1,
+    "kcalPerServing": 367,
+    "tags": [
+      "colazione",
+      "vegetariano"
+    ],
+    "ingredients": [
+      {
+        "item": "Fiocchi di avena",
+        "qty": 50,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Frutta secca",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Granella di nocciole",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_uova_strapazzate_con_toast_con_cacao_3",
+    "name": "Uova Strapazzate Con Toast Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 327,
+    "tags": [
+      "colazione",
+      "proteico",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Uova",
+        "qty": 2,
+        "unit": "pezzi"
+      },
+      {
+        "item": "Pane",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Burro",
+        "qty": 5,
+        "unit": "g"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto_e_formaggio_con_semi_misti",
+    "name": "Toast Prosciutto E Formaggio Con Semi Misti",
+    "servings": 1,
+    "kcalPerServing": 435,
+    "tags": [
+      "colazione",
+      "salato",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane per toast",
+        "qty": 2,
+        "unit": "fette"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio",
+        "qty": 30,
+        "unit": "g"
+      },
+      {
+        "item": "Semi misti",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_con_cacao_2",
+    "name": "Cappuccino E Brioche Con Cacao",
+    "servings": 1,
+    "kcalPerServing": 354,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Cacao",
+        "qty": 5,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cereali_con_bevanda_vegetale_al_miele",
+    "name": "Cereali Con Bevanda Vegetale Al Miele",
+    "servings": 1,
+    "kcalPerServing": 309,
+    "tags": [
+      "colazione",
+      "veloce",
+      "vegano",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Cereali",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Bevanda di mandorla",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_toast_prosciutto_e_formaggio_al_miele_2",
+    "name": "Toast Prosciutto E Formaggio Al Miele",
+    "servings": 1,
+    "kcalPerServing": 383,
+    "tags": [
+      "colazione",
+      "salato",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane per toast",
+        "qty": 2,
+        "unit": "fette"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio",
+        "qty": 30,
+        "unit": "g"
+      },
+      {
+        "item": "Miele",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_porridge_avena_e_frutta_proteico_2",
+    "name": "Porridge Avena E Frutta Proteico",
+    "servings": 1,
+    "kcalPerServing": 321,
+    "tags": [
+      "colazione",
+      "vegetariano"
+    ],
+    "ingredients": [
+      {
+        "item": "Fiocchi di avena",
+        "qty": 50,
+        "unit": "g"
+      },
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Frutta secca",
+        "qty": 20,
+        "unit": "g"
+      },
+      {
+        "item": "Proteine in polvere",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_smoothie_banana_e_fragola_con_semi_misti_2",
+    "name": "Smoothie Banana E Fragola Con Semi Misti",
+    "servings": 1,
+    "kcalPerServing": 289,
+    "tags": [
+      "colazione",
+      "frutta",
+      "vegano",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Banana",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Fragole",
+        "qty": 120,
+        "unit": "g"
+      },
+      {
+        "item": "Bevanda di soia",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Semi misti",
+        "qty": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cornetto_integrale_e_spremuta_con_granella_di_nocciole",
+    "name": "Cornetto Integrale E Spremuta Con Granella Di Nocciole",
+    "servings": 1,
+    "kcalPerServing": 371,
+    "tags": [
+      "colazione",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Cornetto integrale",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Spremuta d'arancia",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Granella di nocciole",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "col_cappuccino_e_brioche_con_granella_di_nocciole_2",
+    "name": "Cappuccino E Brioche Con Granella Di Nocciole",
+    "servings": 1,
+    "kcalPerServing": 398,
+    "tags": [
+      "colazione",
+      "dolce",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Latte",
+        "qty": 200,
+        "unit": "ml"
+      },
+      {
+        "item": "Caffè",
+        "qty": 30,
+        "unit": "ml"
+      },
+      {
+        "item": "Brioche",
+        "qty": 1,
+        "unit": "pezzo"
+      },
+      {
+        "item": "Granella di nocciole",
+        "qty": 12,
+        "unit": "g"
+      }
+    ]
+  }
+]

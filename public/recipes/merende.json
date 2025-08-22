@@ -1,0 +1,1730 @@
+[
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_light",
+    "name": "Panino piccolo al prosciutto light",
+    "servings": 1,
+    "kcalPerServing": 196,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_senza_lattosio",
+    "name": "Yogurt e cereali senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 181,
+    "tags": [
+      "merenda",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_al_cacao",
+    "name": "Biscotti e succo al cacao",
+    "servings": 1,
+    "kcalPerServing": 194,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_senza_lattosio",
+    "name": "Crackers e formaggio senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 248,
+    "tags": [
+      "merenda",
+      "salato",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_classico",
+    "name": "Biscotti e succo classico",
+    "servings": 1,
+    "kcalPerServing": 208,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_al_cacao_2",
+    "name": "Biscotti e succo al cacao",
+    "servings": 1,
+    "kcalPerServing": 201,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_integrale",
+    "name": "Frutta di stagione integrale",
+    "servings": 1,
+    "kcalPerServing": 77,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_al_cacao_3",
+    "name": "Biscotti e succo al cacao",
+    "servings": 1,
+    "kcalPerServing": 218,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_light",
+    "name": "Biscotti e succo light",
+    "servings": 1,
+    "kcalPerServing": 187,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_al_cacao",
+    "name": "Frutta di stagione al cacao",
+    "servings": 1,
+    "kcalPerServing": 75,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_senza_lattosio",
+    "name": "Frutta di stagione senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 87,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_proteico",
+    "name": "Frutta di stagione proteico",
+    "servings": 1,
+    "kcalPerServing": 87,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_senza_lattosio",
+    "name": "Biscotti e succo senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 188,
+    "tags": [
+      "merenda",
+      "dolce",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_al_cacao",
+    "name": "Crackers e formaggio al cacao",
+    "servings": 1,
+    "kcalPerServing": 247,
+    "tags": [
+      "merenda",
+      "latticini",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_proteico",
+    "name": "Biscotti e succo proteico",
+    "servings": 1,
+    "kcalPerServing": 207,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_integrale_2",
+    "name": "Frutta di stagione integrale",
+    "servings": 1,
+    "kcalPerServing": 76,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_al_cacao",
+    "name": "Yogurt e cereali al cacao",
+    "servings": 1,
+    "kcalPerServing": 177,
+    "tags": [
+      "merenda",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_classico_2",
+    "name": "Biscotti e succo classico",
+    "servings": 1,
+    "kcalPerServing": 186,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_integrale",
+    "name": "Crackers e formaggio integrale",
+    "servings": 1,
+    "kcalPerServing": 252,
+    "tags": [
+      "merenda",
+      "latticini",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_light_2",
+    "name": "Panino piccolo al prosciutto light",
+    "servings": 1,
+    "kcalPerServing": 194,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_classico_3",
+    "name": "Biscotti e succo classico",
+    "servings": 1,
+    "kcalPerServing": 196,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_senza_lattosio_2",
+    "name": "Frutta di stagione senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 89,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_senza_lattosio_2",
+    "name": "Yogurt e cereali senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 199,
+    "tags": [
+      "merenda",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_light_3",
+    "name": "Panino piccolo al prosciutto light",
+    "servings": 1,
+    "kcalPerServing": 231,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_senza_lattosio_2",
+    "name": "Biscotti e succo senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 234,
+    "tags": [
+      "merenda",
+      "dolce",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_senza_lattosio_3",
+    "name": "Yogurt e cereali senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 182,
+    "tags": [
+      "merenda",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_integrale",
+    "name": "Biscotti e succo integrale",
+    "servings": 1,
+    "kcalPerServing": 231,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_proteico",
+    "name": "Crackers e formaggio proteico",
+    "servings": 1,
+    "kcalPerServing": 262,
+    "tags": [
+      "merenda",
+      "latticini",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_al_cacao_2",
+    "name": "Frutta di stagione al cacao",
+    "servings": 1,
+    "kcalPerServing": 85,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_al_cacao_4",
+    "name": "Biscotti e succo al cacao",
+    "servings": 1,
+    "kcalPerServing": 232,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_al_cacao_2",
+    "name": "Crackers e formaggio al cacao",
+    "servings": 1,
+    "kcalPerServing": 258,
+    "tags": [
+      "merenda",
+      "latticini",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_proteico",
+    "name": "Panino piccolo al prosciutto proteico",
+    "servings": 1,
+    "kcalPerServing": 209,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_light",
+    "name": "Crackers e formaggio light",
+    "servings": 1,
+    "kcalPerServing": 269,
+    "tags": [
+      "merenda",
+      "latticini",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_integrale_2",
+    "name": "Biscotti e succo integrale",
+    "servings": 1,
+    "kcalPerServing": 207,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_al_cacao_5",
+    "name": "Biscotti e succo al cacao",
+    "servings": 1,
+    "kcalPerServing": 202,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_senza_lattosio_2",
+    "name": "Crackers e formaggio senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 237,
+    "tags": [
+      "merenda",
+      "salato",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_integrale",
+    "name": "Panino piccolo al prosciutto integrale",
+    "servings": 1,
+    "kcalPerServing": 245,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane integrale",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_light",
+    "name": "Yogurt e cereali light",
+    "servings": 1,
+    "kcalPerServing": 175,
+    "tags": [
+      "merenda",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_classico_4",
+    "name": "Biscotti e succo classico",
+    "servings": 1,
+    "kcalPerServing": 201,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_proteico_2",
+    "name": "Biscotti e succo proteico",
+    "servings": 1,
+    "kcalPerServing": 231,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_senza_lattosio_3",
+    "name": "Biscotti e succo senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 235,
+    "tags": [
+      "merenda",
+      "dolce",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_senza_lattosio_4",
+    "name": "Yogurt e cereali senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 200,
+    "tags": [
+      "merenda",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_light_2",
+    "name": "Yogurt e cereali light",
+    "servings": 1,
+    "kcalPerServing": 200,
+    "tags": [
+      "merenda",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_classico",
+    "name": "Panino piccolo al prosciutto classico",
+    "servings": 1,
+    "kcalPerServing": 240,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_classico_5",
+    "name": "Biscotti e succo classico",
+    "servings": 1,
+    "kcalPerServing": 211,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_classico_6",
+    "name": "Biscotti e succo classico",
+    "servings": 1,
+    "kcalPerServing": 221,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_proteico_3",
+    "name": "Biscotti e succo proteico",
+    "servings": 1,
+    "kcalPerServing": 234,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_senza_lattosio_3",
+    "name": "Frutta di stagione senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 85,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_al_cacao",
+    "name": "Panino piccolo al prosciutto al cacao",
+    "servings": 1,
+    "kcalPerServing": 227,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_proteico_4",
+    "name": "Biscotti e succo proteico",
+    "servings": 1,
+    "kcalPerServing": 189,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_proteico_2",
+    "name": "Panino piccolo al prosciutto proteico",
+    "servings": 1,
+    "kcalPerServing": 239,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_al_cacao_6",
+    "name": "Biscotti e succo al cacao",
+    "servings": 1,
+    "kcalPerServing": 216,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_light_2",
+    "name": "Biscotti e succo light",
+    "servings": 1,
+    "kcalPerServing": 187,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_integrale_3",
+    "name": "Frutta di stagione integrale",
+    "servings": 1,
+    "kcalPerServing": 83,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_integrale_2",
+    "name": "Panino piccolo al prosciutto integrale",
+    "servings": 1,
+    "kcalPerServing": 233,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane integrale",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_classico_7",
+    "name": "Biscotti e succo classico",
+    "servings": 1,
+    "kcalPerServing": 223,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_senza_lattosio_4",
+    "name": "Frutta di stagione senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 74,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_classico_2",
+    "name": "Panino piccolo al prosciutto classico",
+    "servings": 1,
+    "kcalPerServing": 196,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_al_cacao_3",
+    "name": "Frutta di stagione al cacao",
+    "servings": 1,
+    "kcalPerServing": 77,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_integrale_3",
+    "name": "Biscotti e succo integrale",
+    "servings": 1,
+    "kcalPerServing": 197,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_light_3",
+    "name": "Biscotti e succo light",
+    "servings": 1,
+    "kcalPerServing": 219,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_integrale",
+    "name": "Yogurt e cereali integrale",
+    "servings": 1,
+    "kcalPerServing": 166,
+    "tags": [
+      "merenda",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_senza_lattosio_3",
+    "name": "Crackers e formaggio senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 247,
+    "tags": [
+      "merenda",
+      "salato",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_senza_lattosio_5",
+    "name": "Yogurt e cereali senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 198,
+    "tags": [
+      "merenda",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_integrale_2",
+    "name": "Yogurt e cereali integrale",
+    "servings": 1,
+    "kcalPerServing": 178,
+    "tags": [
+      "merenda",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_senza_lattosio",
+    "name": "Panino piccolo al prosciutto senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 207,
+    "tags": [
+      "merenda",
+      "salato",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_senza_lattosio_5",
+    "name": "Frutta di stagione senza lattosio",
+    "servings": 1,
+    "kcalPerServing": 88,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light",
+      "senza lattosio"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_integrale_2",
+    "name": "Crackers e formaggio integrale",
+    "servings": 1,
+    "kcalPerServing": 215,
+    "tags": [
+      "merenda",
+      "latticini",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_light_4",
+    "name": "Panino piccolo al prosciutto light",
+    "servings": 1,
+    "kcalPerServing": 209,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_proteico_5",
+    "name": "Biscotti e succo proteico",
+    "servings": 1,
+    "kcalPerServing": 197,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_integrale_3",
+    "name": "Panino piccolo al prosciutto integrale",
+    "servings": 1,
+    "kcalPerServing": 246,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane integrale",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_classico_8",
+    "name": "Biscotti e succo classico",
+    "servings": 1,
+    "kcalPerServing": 197,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_al_cacao_3",
+    "name": "Crackers e formaggio al cacao",
+    "servings": 1,
+    "kcalPerServing": 244,
+    "tags": [
+      "merenda",
+      "latticini",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_classico_3",
+    "name": "Panino piccolo al prosciutto classico",
+    "servings": 1,
+    "kcalPerServing": 245,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_biscotti_e_succo_al_cacao_7",
+    "name": "Biscotti e succo al cacao",
+    "servings": 1,
+    "kcalPerServing": 185,
+    "tags": [
+      "merenda",
+      "dolce"
+    ],
+    "ingredients": [
+      {
+        "item": "Biscotti",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Succo di frutta",
+        "qty": 200,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "mer_frutta_di_stagione_light",
+    "name": "Frutta di stagione light",
+    "servings": 1,
+    "kcalPerServing": 85,
+    "tags": [
+      "merenda",
+      "frutta",
+      "light"
+    ],
+    "ingredients": [
+      {
+        "item": "Frutta",
+        "qty": 200,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_integrale_4",
+    "name": "Panino piccolo al prosciutto integrale",
+    "servings": 1,
+    "kcalPerServing": 226,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane integrale",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_panino_piccolo_al_prosciutto_integrale_5",
+    "name": "Panino piccolo al prosciutto integrale",
+    "servings": 1,
+    "kcalPerServing": 227,
+    "tags": [
+      "merenda",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Pane integrale",
+        "qty": 60,
+        "unit": "g"
+      },
+      {
+        "item": "Prosciutto cotto",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_crackers_e_formaggio_al_cacao_4",
+    "name": "Crackers e formaggio al cacao",
+    "servings": 1,
+    "kcalPerServing": 250,
+    "tags": [
+      "merenda",
+      "latticini",
+      "salato"
+    ],
+    "ingredients": [
+      {
+        "item": "Crackers",
+        "qty": 40,
+        "unit": "g"
+      },
+      {
+        "item": "Formaggio spalmabile",
+        "qty": 30,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "mer_yogurt_e_cereali_proteico",
+    "name": "Yogurt e cereali proteico",
+    "servings": 1,
+    "kcalPerServing": 163,
+    "tags": [
+      "merenda",
+      "latticini"
+    ],
+    "ingredients": [
+      {
+        "item": "Yogurt bianco",
+        "qty": 125,
+        "unit": "g"
+      },
+      {
+        "item": "Cereali",
+        "qty": 40,
+        "unit": "g"
+      }
+    ]
+  }
+]
