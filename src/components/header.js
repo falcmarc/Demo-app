@@ -1,22 +1,21 @@
-export function Header() {
-  const el = document.createElement('nav');
-  el.className = 'topnav';
+// src/components/header.js
+export default function Header() {
+  const el = document.createElement('header');
+  el.className = 'top-header';
+
   el.innerHTML = `
-    <a href="#/start" data-route="/start">Start</a>
-    <a href="#/planner" data-route="/planner">Planner</a>
-    <a href="#/list" data-route="/list">Lista</a>
-    <a href="#/pantry" data-route="/pantry">Dispensa</a>
-    <a href="#/settings" data-route="/settings">Impostazioni</a>
-    <span class="spacer"></span>
-    <span class="small">beta v0.3</span>
+    <div class="top-header-inner">
+      <div class="logo">
+        <a href="#/home" class="logo-link">🍏 DemoApp</a>
+      </div>
+      <nav class="nav">
+        <a href="#/planner" class="nav-link">Planner</a>
+        <a href="#/recipes" class="nav-link">Ricette</a>
+        <a href="#/foods" class="nav-link">Cibi</a>
+        <a href="#/allergies" class="nav-link">Allergie</a>
+      </nav>
+    </div>
   `;
-  const setActive = () => {
-    const path = (location.hash.slice(1) || '/start').toLowerCase();
-    el.querySelectorAll('a[data-route]').forEach(a => {
-      a.classList.toggle('active', a.getAttribute('data-route') === path);
-    });
-  };
-  window.addEventListener('hashchange', setActive);
-  setActive();
+
   return el;
 }
