@@ -1,23 +1,59 @@
-import { Header } from './components/Header.js';
+// src/app.js
+import Header from './components/header.js';
 import { mount } from './router.js';
-import Start from './modules/start/index.js';
+
+import Landing from './modules/landing/index.js';
 import Planner from './modules/planner/index.js';
-import List from './modules/list/index.js';
-import Pantry from './modules/pantry/index.js';
-import Settings from './modules/settings/index.js';
+import StartSettings from './modules/start/index.js';
+import Recipes from './modules/recipes/index.js';
+import Foods from './modules/foods/index.js';
+import Allergies from './modules/allergies/index.js';
+import Login from './modules/login/index.js';
 import NotFound from './modules/notfound/index.js';
+import BottomNav from './components/BottomNav.js';
+import { applyPlatformClass } from './lib/device.js';
+import { getUserCached, onAuthChange } from './lib/auth.js';
 
 const header = document.getElementById('header');
 const app = document.getElementById('app');
+const bottom = document.getElementById('bottom-nav');
+
 header.appendChild(Header());
 
 const routes = {
-  '/': Start,          // 👈 pagina iniziale
-  '/start': Start,
+  '/': Landing,
+  '/home': Landing,
   '/planner': Planner,
-  '/list': List,
-  '/pantry': Pantry,
-  '/settings': Settings,
+  '/settings': StartSettings,
+  '/recipes': Recipes,
+  '/foods': Foods,
+  '/allergies': Allergies,
+  '/login': Login,
 };
 
-mount(app, routes, NotFound);
+function renderBottom(activeKey){
+  bottom.innerHTML = '';
+  bottom.appendChild(BottomNav(activeKey));
+}
+
+function onRouteChange(){
+  const key = location.hash.replace('#','') || '/home';
+  const base = key.split('?')[0];
+
+  // Gate semplice: se prova ad aprire planner/settings senza login → manda a /login
+  const needsAuth = ['/planner','/settings','/recipes','/foods','/allergies'];
+  if (needsAuth.includes(base) && !getUserCached()) {
+    location.hash = '#/login';
+    return;
+  }
+
+  renderBottom(base);
+  applyPlatformClass();
+}
+
+// aggiorna UI su login/logout
+onAuthChange(() => {
+  onRouteChange();
+});
+
+mount(app, routes, NotFound, onRouteChange);
