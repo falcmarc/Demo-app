@@ -6,16 +6,20 @@ export default function Login(){
   el.className = 'card';
   el.innerHTML = `
     <h1>Accedi</h1>
-    <p class="small">Usa l'e-mail per ricevere un <strong>link magico</strong> di accesso.</p>
+    <p class="small">Inserisci la tua email: ti invieremo un <strong>link magico</strong>.</p>
 
     <div id="logged" style="display:none; margin-top:10px">
       <div class="small">Sei autenticato come:</div>
       <div id="who" style="margin:6px 0 12px"></div>
-      <button id="logout" class="btn secondary">Esci</button>
+      <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <a href="#/planner" class="btn">Vai al Planner</a>
+        <a href="#/settings" class="btn secondary">Impostazioni familiari</a>
+        <button id="logout" class="btn secondary">Esci</button>
+      </div>
     </div>
 
     <div id="form" style="display:none; margin-top:8px">
-      <label class="small">Email</label>
+      <label class="small">Email</label><br/>
       <input id="email" class="input" type="email" placeholder="tuo@email.it" style="width:280px; max-width:100%">
       <div style="display:flex; gap:8px; margin-top:10px">
         <button id="send" class="btn">Inviami il link</button>
@@ -40,11 +44,10 @@ export default function Login(){
     }
   }
 
-  // stato iniziale: cached o fetch
+  // stato iniziale: cache poi fetch
   render(getUserCached());
   getUser().then(u => render(u));
 
-  // cambia su eventi auth
   onAuthChange((u) => render(u));
 
   el.querySelector('#send').addEventListener('click', async ()=>{
