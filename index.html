@@ -1,16 +1,20 @@
 <!doctype html>
 <html lang="it">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Demo Modulare</title>
-    <link rel="stylesheet" href="./src/styles.css" />
-  </head>
-  <body>
-    <header id="header"></header>
-    <main id="app" class="container"></main>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Demo Modulare</title>
+  <link rel="stylesheet" href="./styles.css">
+  <!-- Facoltativo: se non hai un favicon, commenta la riga sotto -->
+  <!-- <link rel="icon" href="./favicon.ico"> -->
+</head>
+<body>
+  <!-- Questi ID DEVONO esistere -->
+  <header id="header"></header>
+  <main id="app" class="app"></main>
+  <nav id="bottom-nav" class="bottom-nav"></nav>
 
-    <!-- Bootstrap dell'app -->
-    <script type="module" src="./src/app.js"></script>
-  </body>
+  <!-- Carica lo script alla fine del body: così il DOM è pronto -->
+  <script type="module" src="./src/app.js"></script>
+</body>
 </html>
