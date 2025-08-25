@@ -10,16 +10,20 @@ import Foods from './modules/foods/index.js';
 import Allergies from './modules/allergies/index.js';
 import Login from './modules/login/index.js';
 import NotFound from './modules/notfound/index.js';
-import BottomNav from './components/BottomNav.js';
-import { applyPlatformClass } from './lib/device.js';
+
+import BottomNav from './components/BottomNav.js';   // ✅ corretto
+import { applyPlatformClass } from './lib/device.js'; // ✅ corretto
+
 import { getUserCached, onAuthChange } from './lib/auth.js';
 
 const header = document.getElementById('header');
 const app = document.getElementById('app');
 const bottom = document.getElementById('bottom-nav');
 
+// Monta l'header
 header.appendChild(Header());
 
+// Definizione rotte
 const routes = {
   '/': Landing,
   '/home': Landing,
@@ -31,16 +35,18 @@ const routes = {
   '/login': Login,
 };
 
+// Render bottom nav
 function renderBottom(activeKey){
   bottom.innerHTML = '';
   bottom.appendChild(BottomNav(activeKey));
 }
 
+// Route change handler
 function onRouteChange(){
   const key = location.hash.replace('#','') || '/home';
   const base = key.split('?')[0];
 
-  // Gate semplice: se prova ad aprire planner/settings senza login → manda a /login
+  // Gate di accesso: se non loggato → redirect a /login
   const needsAuth = ['/planner','/settings','/recipes','/foods','/allergies'];
   if (needsAuth.includes(base) && !getUserCached()) {
     location.hash = '#/login';
@@ -51,9 +57,10 @@ function onRouteChange(){
   applyPlatformClass();
 }
 
-// aggiorna UI su login/logout
+// Aggiorna UI su login/logout
 onAuthChange(() => {
   onRouteChange();
 });
 
+// Monta router
 mount(app, routes, NotFound, onRouteChange);
