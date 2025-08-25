@@ -1,21 +1,45 @@
 // src/modules/planner/index.js
+//
+// Planner "tipo calendario" compatto + lista spesa (1–4 settimane)
+// - celle più rettangolari e compatte
+// - select ricette più alti (touch-friendly)
+// - header con date reali della settimana
+// - rigenera menu bilanciato
+// - lista spesa aggregata (1, 2, 3, 4 settimane) con copia/esporta
+//
+// Dipendenze già presenti nel progetto:
+//   - getRecipes()             (src/data/recipes.js)
+//   - loadSettings, kidFactor  (src/lib/utils.js)
+//   - generateBalancedWeeklyMenu (src/lib/balancedMenu.js) — se non c'è, il tasto resta ma non rompe
+
 import { getRecipes } from '../../data/recipes.js';
-import { loadSettings, dietPredicate, kidFactor } from '../../lib/utils.js';
+import { loadSettings, kidFactor, dietPredicate } from '../../lib/utils.js';
 import { generateBalancedWeeklyMenu } from '../../lib/balancedMenu.js';
 
-const DAYS  = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+// giorni IT con indice ISO (lun=1)
+const DAYS = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
 const MEALS = ['colazione','pranzo','merenda','cena'];
 
-const PLAN_KEY = 'app.plan.v3';
+const PLAN_KEY = 'app.plan.v4'; // bump chiave
 const getPlan = () => JSON.parse(localStorage.getItem(PLAN_KEY) || 'null');
 const setPlan = (p) => localStorage.setItem(PLAN_KEY, JSON.stringify(p));
 
-// piano vuoto 7×4
 function emptyPlan(){
-  return DAYS.map(()=> Object.fromEntries(MEALS.map(m => [m, { meal:null, excluded:false }])) );
+  return DAYS.map(()=> Object.fromEntries(MEALS.map(m => [m, { meal:null, excluded:false }])));
 }
 
-// --- partecipazione/porzioni (coerente con Start) ---
+// date helper: inizio settimana (lun) per una data
+function startOfWeek(d){
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const day = x.getDay() || 7; // dom=0 -> 7
+  if (day > 1) x.setDate(x.getDate() - (day - 1));
+  x.setHours(0,0,0,0);
+  return x;
+}
+function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function fmtShort(d){ return d.toLocaleDateString('it-IT',{ day:'2-digit', month:'2-digit' }); }
+
+// partecipazione/porzioni dal modulo Start
 function countsForMeal(settings, meal) {
   const mode = settings?.participation?.[meal]?.mode || 'tutti';
   const A = settings.adults || 0;
@@ -45,338 +69,326 @@ function eqServings(adults, kids, kidsAges){
   return Math.max(0, (adults||0) + kidsEq);
 }
 
-// --- icone in base ai tag ---
-function iconsForRecipe(r){
-  const t = (r?.tags || []).map(x=>x.toLowerCase());
-  const name = (r?.name || '').toLowerCase();
-  const icons = [];
-  if (t.includes('pesce') || /salmone|merluzzo|tonno|spada|orata|branzino|sgombro/.test(name)) icons.push('🐟');
-  if (t.includes('carne') || /manzo|bistecca|ragù|salsiccia|pollo|maiale|tacchino|burger/.test(name)) icons.push('🍗');
-  if (t.includes('vegano') || t.includes('veg') || t.includes('vegetariano') || /tofu|verdure|insalat/.test(name)) icons.push('🌱');
-  if (t.includes('pasta') || /pasta|spaghetti|penne|fusilli|riso|risotto|couscous/.test(name)) icons.push('🍝');
-  if (t.includes('pizza')) icons.push('🍕');
-  if (t.includes('latticini') || /yogurt|mozzarella|formaggio|latte/.test(name)) icons.push('🧀');
-  if (t.includes('dolce') || /torta|biscotti|pancake|marmellata|miele|nocciolata/.test(name)) icons.push('🍩');
-  return icons.length ? icons.join(' ') : '🍽️';
-}
-
-// --- overlay / modale generica ---
-function ensureOverlayRoot(){
-  let root = document.getElementById('overlay-root');
-  if (!root) {
-    root = document.createElement('div');
-    root.id = 'overlay-root';
-    root.style.position = 'fixed';
-    root.style.inset = '0';
-    root.style.zIndex = '9999';
-    root.style.display = 'none';
-    document.body.appendChild(root);
-  }
-  return root;
-}
-function openOverlay(contentHTML, { fullscreen=false } = {}){
-  const root = ensureOverlayRoot();
-  root.innerHTML = `
-    <div style="
-      position:absolute; inset:0; background:rgba(0,0,0,0.45);
-      display:flex; align-items:${fullscreen?'stretch':'center'}; justify-content:center; padding:20px;">
-      <div style="
-        background:var(--bg, #111); color:inherit;
-        width:${fullscreen?'min(1200px, 96vw)':'min(640px, 96vw)'};
-        max-height: 92vh; overflow:auto; border-radius:12px; border:1px solid var(--border,#333);
-        box-shadow: 0 15px 50px rgba(0,0,0,0.45); padding:${fullscreen?'18px 18px 8px':'16px'};">
-        ${contentHTML}
-      </div>
-    </div>`;
-  root.style.display = 'block';
-  // chiudi cliccando sul backdrop
-  root.firstElementChild.addEventListener('click', (e)=>{
-    if (e.target === root.firstElementChild) closeOverlay();
-  });
-}
-function closeOverlay(){
-  const root = ensureOverlayRoot();
-  root.style.display = 'none';
-  root.innerHTML = '';
-}
-
-// --- UI principale ---
 export default function Planner(){
   const settings = loadSettings();
-  const allow    = dietPredicate(settings);
+  const allow = dietPredicate(settings);
   let RECIPES = [];
 
+  // stato data corrente (settimana “corrente”)
+  let weekStart = startOfWeek(new Date());
+
   const el = document.createElement('div');
-  el.className = 'card';
   el.innerHTML = `
-    <h1>Planner settimanale</h1>
-    <div class="small" style="margin-bottom:8px">
-      Dieta: <strong>${settings.diet}</strong> · Famiglia: <strong>${settings.adults} adulti, ${settings.kids} bambini</strong> · Spesa: <strong>${settings.shoppingDay}</strong>
+    <div class="card" style="padding:12px">
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:space-between">
+        <div class="small">
+          Dieta: <strong>${settings.diet}</strong> · Famiglia: <strong>${settings.adults} adulti, ${settings.kids} bambini</strong>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center">
+          <button id="prevW" class="btn secondary" title="Settimana precedente">◀</button>
+          <div id="weekLabel" class="small" style="min-width:160px; text-align:center"></div>
+          <button id="nextW" class="btn secondary" title="Settimana successiva">▶</button>
+          <button id="todayW" class="btn secondary">Oggi</button>
+        </div>
+      </div>
     </div>
-    <div class="toolbar" style="display:flex; gap:8px; margin-bottom:12px">
-      <button id="reset" class="btn secondary">Azzera</button>
-      <button id="auto" class="btn">Precompila bilanciato</button>
-      <span id="status" class="small" style="margin-left:auto">Carico ricette…</span>
-    </div>
-    <div style="overflow-x:auto">
-      <table class="planner" style="border-collapse:collapse; width:100%; text-align:center">
-        <thead>
-          <tr>
-            <th style="padding:6px; text-align:left">Giorno</th>
-            ${MEALS.map(m=>`<th style="padding:6px; text-transform:capitalize">${m}</th>`).join('')}
-          </tr>
-        </thead>
+
+    <div class="calendar card" style="margin-top:10px; overflow-x:auto">
+      <table class="cal-table">
+        <thead id="thead"></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
+
+    <div class="card" style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center">
+      <button id="regen" class="btn">Rigenera menu bilanciato</button>
+      <div class="small">Celle <em>Escludi</em> non verranno rigenerate.</div>
+      <div style="margin-left:auto; display:flex; gap:8px; align-items:center">
+        <label class="small">Orizzonte lista spesa</label>
+        <select id="horizon" class="input" style="height:40px">
+          <option value="1">1 settimana</option>
+          <option value="2">2 settimane</option>
+          <option value="3">3 settimane</option>
+          <option value="4">4 settimane</option>
+        </select>
+        <button id="genList" class="btn secondary">Aggiorna lista spesa</button>
+        <button id="copyList" class="btn secondary">Copia</button>
+      </div>
+    </div>
+
+    <div class="card" id="shoppingCard" style="margin-top:10px">
+      <h3 style="margin:0 0 8px">Lista spesa</h3>
+      <div id="shoppingEmpty" class="small">Nessun ingrediente: seleziona ricette o rigenera il menu.</div>
+      <ul id="shoppingList" class="list"></ul>
+    </div>
   `;
 
-  const tbody  = el.querySelector('#tbody');
-  const status = el.querySelector('#status');
+  // CSS mirato per compattare la tabella
+  injectOnce('planner-compact-css', `
+    .cal-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 8px;
+      table-layout: fixed;
+    }
+    .cal-table thead th {
+      position: sticky; top: 0; z-index: 1;
+      background: var(--card); border:1px solid var(--border); border-radius:10px;
+      padding: 8px; text-align:center;
+    }
+    .cal-table tbody td {
+      vertical-align: top;
+      background: #0b0e13; border:1px solid var(--border); border-radius:12px;
+      padding: 8px;
+    }
+    .meal-block {
+      display: grid; grid-template-rows: auto auto auto; gap: 6px;
+      height: 180px; /* più rettangolare/compatto, sta a schermo */
+    }
+    .meal-title { font-size: .9rem; color: var(--muted); }
+    .meal-select {
+      width: 100%; height: 44px; /* più alto per touch */
+      background:#0b0e13; color:var(--text); border:1px solid var(--border); border-radius:10px; padding:6px 8px;
+    }
+    .meal-actions { display:flex; gap:6px; align-items:center; justify-content:space-between }
+    .badge { font-size:.85rem; opacity:.85 }
+    @media (max-width: 900px){
+      .meal-block { height: 200px; }
+    }
+  `);
 
+  const $thead = el.querySelector('#thead');
+  const $tbody = el.querySelector('#tbody');
+  const $weekLabel = el.querySelector('#weekLabel');
+  const $horizon = el.querySelector('#horizon');
+  const $shoppingList = el.querySelector('#shoppingList');
+  const $shoppingEmpty = el.querySelector('#shoppingEmpty');
+
+  // init
   (async () => {
-    RECIPES = await getRecipes();
-    status.textContent = `${RECIPES.length} ricette`;
-    render();
-  })().catch(e => { console.error(e); status.textContent='Errore ricette'; render(); });
+    RECIPES = (await getRecipes()).filter(allow);
+    renderCalendar();
+    renderShopping(); // iniziale
+  })();
 
-  function recipeById(id){ return (RECIPES || []).find(r => r.id === id); }
+  // NAV settimana
+  el.querySelector('#prevW').addEventListener('click', ()=>{ weekStart = addDays(weekStart, -7); renderCalendar(); });
+  el.querySelector('#nextW').addEventListener('click', ()=>{ weekStart = addDays(weekStart, +7); renderCalendar(); });
+  el.querySelector('#todayW').addEventListener('click', ()=>{ weekStart = startOfWeek(new Date()); renderCalendar(); });
 
-  function render(){
-    let plan = getPlan();
-    if (!plan) { plan = emptyPlan(); setPlan(plan); }
+  // Rigenera menu
+  el.querySelector('#regen').addEventListener('click', ()=>{
+    const plan = getPlan() || emptyPlan();
+    // se c'è generatore, usalo, altrimenti non far nulla
+    try {
+      if (typeof generateBalancedWeeklyMenu === 'function') {
+        const newPlan = generateBalancedWeeklyMenu(RECIPES, settings, plan);
+        setPlan(newPlan);
+      }
+    } catch (e) {
+      console.warn('[planner] generateBalancedWeeklyMenu error', e);
+    }
+    renderCalendar();
+    renderShopping();
+  });
 
-    const allowed = RECIPES.filter(allow);
-    tbody.innerHTML = '';
+  el.querySelector('#genList').addEventListener('click', renderShopping);
+  el.querySelector('#copyList').addEventListener('click', ()=>{
+    const items = Array.from($shoppingList.querySelectorAll('li')).map(li => li.textContent);
+    if (!items.length) return;
+    navigator.clipboard.writeText(items.join('\n'));
+  });
 
-    plan.forEach((day, dIdx)=>{
-      const tr = document.createElement('tr');
+  // ——— UI ———
+  function renderCalendar(){
+    $thead.innerHTML = '';
+    $tbody.innerHTML = '';
+    $weekLabel.textContent = `${fmtShort(weekStart)} — ${fmtShort(addDays(weekStart,6))}`;
+
+    // intestazione: 1 cella vuota + 7 giorni con data breve
+    const trH = document.createElement('tr');
+    const th0 = document.createElement('th'); th0.textContent = ''; th0.style.minWidth = '120px';
+    trH.appendChild(th0);
+    for (let i=0;i<7;i++){
+      const d = addDays(weekStart, i);
       const th = document.createElement('th');
-      th.style.padding='6px'; th.style.textAlign='left';
-      th.textContent = DAYS[dIdx];
-      tr.appendChild(th);
+      th.innerHTML = `<div>${DAYS[i]}</div><div class="small">${fmtShort(d)}</div>`;
+      trH.appendChild(th);
+    }
+    $thead.appendChild(trH);
 
-      MEALS.forEach(meal=>{
-        const td = document.createElement('td'); td.style.padding='6px';
+    // righe: una per tipo di pasto
+    const plan = getPlan() || (setPlan(emptyPlan()), getPlan());
+    for (const meal of MEALS) {
+      const tr = document.createElement('tr');
 
-        // select ricette
+      // etichetta riga
+      const th = document.createElement('th');
+      th.textContent = meal[0].toUpperCase() + meal.slice(1);
+      th.style.textAlign='left';
+      $thead.children.length > 0 ? tr.appendChild(th) : null; // compat
+
+      // 7 celle
+      for (let dayIdx=0; dayIdx<7; dayIdx++){
+        const td = document.createElement('td');
+        const cell = plan[dayIdx][meal]; // { meal, excluded }
+
+        const wrap = document.createElement('div');
+        wrap.className = 'meal-block';
+
+        // 1) titolo + badge
+        const title = document.createElement('div');
+        title.className = 'meal-title';
+        title.innerHTML = `
+          <span>${DAYS[dayIdx].slice(0,3)} · ${meal}</span>
+          ${cell.excluded ? `<span class="badge">· <em>escluso</em></span>` : ''}
+        `;
+
+        // 2) select ricetta
         const sel = document.createElement('select');
-        sel.className = 'input';
-        sel.title = 'Seleziona ricetta';
-        sel.style.minWidth = '220px';
-        sel.innerHTML = `<option value="">—</option>` + 
-          allowed
-            .filter(r => (r.tags||[]).includes(meal)) // priorità per tipo pasto
-            .concat(allowed)                           // fallback: tutte
-            .filter((r,i,arr)=> arr.findIndex(a=>a.id===r.id)===i) // dedupe
-            .map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
-
-        sel.value = day[meal].meal || '';
-        sel.disabled = !!day[meal].excluded;
-
-        // riga meta: icone + kcal
-        const meta = document.createElement('div');
-        meta.className = 'small';
-        meta.style.marginTop = '4px';
-        updateMeta(meta, sel.value, meal);
+        sel.className = 'meal-select';
+        sel.innerHTML = `<option value="">— scegli —</option>` + RECIPES
+          .filter(r=> (r.tags||[]).includes(meal)) // priorità matching pasto
+          .concat(RECIPES)                         // fallback tutto
+          .filter((r,i,arr)=> arr.findIndex(a=>a.id===r.id)===i) // dedupe
+          .map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
+        sel.value = cell.meal || '';
+        sel.disabled = cell.excluded;
 
         sel.addEventListener('change', ()=>{
-          const p = getPlan(); p[dIdx][meal].meal = sel.value || null; setPlan(p);
-          updateMeta(meta, sel.value, meal);
+          const p = getPlan(); p[dayIdx][meal].meal = sel.value || null; setPlan(p);
+          renderShoppingDebounced();
         });
 
-        // bottone Dettagli
-        const btn = document.createElement('button');
-        btn.className = 'btn secondary';
-        btn.textContent = 'Dettagli';
-        btn.disabled = !day[meal].meal || !!day[meal].excluded;
-        btn.style.marginLeft = '6px';
+        // 3) azioni
+        const actions = document.createElement('div');
+        actions.className = 'meal-actions';
 
-        btn.addEventListener('click', ()=>{
-          const rec = recipeById(day[meal].meal);
-          if (!rec) return;
-          openMini(rec, meal);
+        const exLab = document.createElement('label');
+        exLab.className = 'small';
+        const exChk = document.createElement('input'); exChk.type='checkbox'; exChk.checked = !!cell.excluded;
+        exChk.addEventListener('change', ()=>{
+          const p = getPlan(); p[dayIdx][meal].excluded = exChk.checked; setPlan(p);
+          sel.disabled = exChk.checked;
+          renderCalendar(); // per aggiornare badge e stato
+          renderShoppingDebounced();
+        });
+        exLab.append(exChk, document.createTextNode(' Escludi'));
+
+        const detBtn = document.createElement('button');
+        detBtn.className = 'btn secondary';
+        detBtn.textContent = 'Dettagli';
+        detBtn.disabled = !cell.meal || cell.excluded;
+        detBtn.addEventListener('click', ()=>{
+          const rec = RECIPES.find(r => r.id === cell.meal);
+          if (rec) openRecipeMini(rec, meal);
         });
 
-        // exclude
-        const lab = document.createElement('label'); lab.className='small';
-        lab.style.display='flex'; lab.style.gap='6px'; lab.style.alignItems='center'; lab.style.marginTop='6px';
-        const chk = document.createElement('input'); chk.type='checkbox'; chk.checked = !!day[meal].excluded;
-        chk.addEventListener('change', ()=>{
-          const p = getPlan(); p[dIdx][meal].excluded = chk.checked; setPlan(p);
-          // disabilita/abilita
-          sel.disabled = chk.checked;
-          btn.disabled = chk.checked || !sel.value;
-          updateMeta(meta, sel.value, meal);
-        });
-        lab.append(chk, document.createTextNode('Escludi'));
+        actions.append(exLab, detBtn);
 
-        td.appendChild(sel);
-        td.appendChild(btn);
-        td.appendChild(meta);
-        td.appendChild(lab);
+        wrap.append(title, sel, actions);
+        td.appendChild(wrap);
         tr.appendChild(td);
+      }
+
+      $tbody.appendChild(tr);
+    }
+  }
+
+  // ——— Lista spesa ———
+  function renderShopping(){
+    // quante settimane prendere (1..4)
+    const weeks = Math.max(1, Math.min(4, +$horizon.value || 1));
+
+    // aggrega ingredienti delle settimane a partire da weekStart
+    const agg = new Map(); // key=item|unit -> { item, unit, qty }
+    for (let w=0; w<weeks; w++){
+      const plan = getPlan() || emptyPlan();
+      for (let d=0; d<7; d++){
+        for (const meal of MEALS){
+          const cell = plan[d][meal];
+          if (!cell || cell.excluded || !cell.meal) continue;
+          const rec = RECIPES.find(r => r.id === cell.meal);
+          if (!rec) continue;
+
+          // porzioni eq in base alle impostazioni e pasto
+          const { adults, kids } = countsForMeal(settings, meal);
+          const servingsEq = eqServings(adults, kids, settings.kidsAges);
+          const factor = (servingsEq || 1) / (rec.servings || 2);
+
+          (rec.ingredients || []).forEach(ing => {
+            const key = `${(ing.item||'').trim().toLowerCase()}|${(ing.unit||'').trim().toLowerCase()}`;
+            const prev = agg.get(key) || { item: ing.item || '', unit: ing.unit || '', qty: 0 };
+            prev.qty += (ing.qty || 0) * factor;
+            agg.set(key, prev);
+          });
+        }
+      }
+    }
+
+    const rows = Array.from(agg.values())
+      .sort((a,b)=> a.item.localeCompare(b.item))
+      .map(obj => {
+        const q = obj.qty;
+        const show = Number.isInteger(q) ? q : Math.round(q);
+        return `<li>${obj.item} — <strong>${show} ${obj.unit||''}</strong></li>`;
       });
 
-      tbody.appendChild(tr);
-    });
+    $shoppingList.innerHTML = rows.join('');
+    $shoppingEmpty.style.display = rows.length ? 'none' : '';
   }
+  let _t = null;
+  function renderShoppingDebounced(){ clearTimeout(_t); _t = setTimeout(renderShopping, 150); }
 
-  function updateMeta(metaEl, recipeId, mealKey){
-    const rec = recipeById(recipeId);
-    const counts = countsForMeal(settings, mealKey);
-    const servings = eqServings(counts.adults, counts.kids, settings.kidsAges);
-    if (!rec) {
-      metaEl.textContent = '—';
-      return;
-    }
-    const icons = iconsForRecipe(rec);
-    const kcalPer = rec.kcalPerServing || null;
-    const kcalTot = kcalPer ? Math.round(kcalPer * servings) : null;
-    metaEl.textContent = `${icons} • ${kcalPer ? `${kcalPer} kcal/porz` : 'kcal n.d.'}${kcalTot ? ` · tot ~${kcalTot}` : ''}`;
-  }
+  // mini-anteprima ricetta
+  function openRecipeMini(rec, mealKey){
+    const { adults, kids } = countsForMeal(settings, mealKey);
+    const servings = eqServings(adults, kids, settings.kidsAges);
+    const factor   = (servings || 1) / (rec.servings || 2);
+    const kcalPer  = rec.kcalPerServing || null;
+    const kcalTot  = kcalPer ? Math.round(kcalPer * servings) : null;
 
-  // reset
-  el.querySelector('#reset').addEventListener('click', ()=>{
-    setPlan(emptyPlan());
-    render();
-  });
-
-  // precompila bilanciato
-  el.querySelector('#auto').addEventListener('click', async ()=>{
-    if (!RECIPES.length) RECIPES = await getRecipes();
-    const plan = generateBalancedWeeklyMenu(RECIPES, settings);
-    setPlan(plan);
-    render();
-  });
-
-  // --- MINI popup dettagli ---
-  function openMini(rec, mealKey){
-    const counts = countsForMeal(settings, mealKey);
-    const servings = eqServings(counts.adults, counts.kids, settings.kidsAges);
-    const factor = (servings || 1) / (rec.servings || 2);
-    const kcalPer = rec.kcalPerServing || null;
-    const kcalTot = kcalPer ? Math.round(kcalPer * servings) : null;
-
-    const ingredientHTML = (rec.ingredients || []).map(ing=>{
-      const qty = (ing.qty || 0) * factor;
-      const qtyStr = Number.isInteger(qty) ? qty : Math.round(qty);
-      return `<li><strong>${ing.item}</strong> — ${qtyStr} ${ing.unit || ''}</li>`;
+    const ingHTML = (rec.ingredients||[]).map(ing=>{
+      const qty = (ing.qty||0)*factor;
+      const show = Number.isInteger(qty) ? qty : Math.round(qty);
+      return `<li><strong>${ing.item}</strong> — ${show} ${ing.unit||''}</li>`;
     }).join('');
 
-    openOverlay(`
-      <div style="display:flex; justify-content:space-between; align-items:center">
-        <h2 style="margin:0">${iconsForRecipe(rec)} ${rec.name}</h2>
-        <button id="closeMini" class="btn secondary">Chiudi</button>
+    ensureOverlay(`
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px">
+        <h2 style="margin:0">${rec.name}</h2>
+        <button id="miniClose" class="btn secondary">Chiudi</button>
       </div>
-      <div class="small" style="margin:6px 0 10px">
-        ${[...(rec.tags||[])].join(' · ') || '—'}
-      </div>
-      <div style="display:grid; grid-template-columns: repeat(2, minmax(160px,1fr)); gap:12px; margin-bottom:10px">
-        <div class="card" style="padding:10px">
-          <div class="small">Partecipanti</div>
-          <div>Adulti: <strong>${counts.adults}</strong></div>
-          <div>Bambini: <strong>${counts.kids}</strong></div>
-          <div>Porzioni eq: <strong>${servings.toFixed(1)}</strong></div>
-        </div>
-        <div class="card" style="padding:10px">
-          <div class="small">Nutrizione (stima)</div>
-          <div>Kcal/porzione: <strong>${kcalPer ? kcalPer : 'n.d.'}</strong></div>
-          <div>Kcal totali: <strong>${kcalTot ?? 'n.d.'}</strong></div>
-        </div>
-      </div>
-      <h3>Ingredienti</h3>
-      <ul class="list">${ingredientHTML || '<li class="small">Nessun ingrediente indicato.</li>'}</ul>
-      <div style="display:flex; gap:8px; margin-top:12px">
-        <button id="openFull" class="btn">Ricetta completa</button>
-        <button id="copyList" class="btn secondary">Copia ingredienti</button>
-      </div>
-    `, { fullscreen:false });
-
-    document.getElementById('closeMini')?.addEventListener('click', closeOverlay);
-    document.getElementById('copyList')?.addEventListener('click', ()=>{
-      const text = (rec.ingredients||[]).map(ing=>{
-        const qty = (ing.qty || 0) * factor;
-        const qtyStr = Number.isInteger(qty) ? qty : Math.round(qty);
-        return `${ing.item}: ${qtyStr} ${ing.unit||''}`;
-      }).join('\n') || 'Nessun ingrediente';
-      navigator.clipboard.writeText(text);
-    });
-    document.getElementById('openFull')?.addEventListener('click', ()=>{
-      closeOverlay();
-      openRecipeFull(rec, settings, mealKey);
-    });
+      <div class="small" style="margin:8px 0">Porzioni eq: <strong>${servings.toFixed(1)}</strong> · Kcal totali: <strong>${kcalTot ?? 'n.d.'}</strong></div>
+      <h3 style="margin:10px 0 6px">Ingredienti</h3>
+      <ul class="list">${ingHTML || '<li class="small">Nessun ingrediente</li>'}</ul>
+    `);
+    document.getElementById('miniClose')?.addEventListener('click', closeOverlay);
   }
 
-  // --- “Pagina” ricetta fullscreen con ricalcolo ---
-  function openRecipeFull(rec, settings, mealKey='cena'){
-    const counts0 = countsForMeal(settings, mealKey);
-    let a = counts0.adults;
-    let k = counts0.kids;
-
-    const renderFull = ()=>{
-      const servings = eqServings(a, k, settings.kidsAges);
-      const factor   = (servings || 1) / (rec.servings || 2);
-      const kcalPer  = rec.kcalPerServing || null;
-      const kcalTot  = kcalPer ? Math.round(kcalPer * servings) : null;
-
-      const ingredients = (rec.ingredients || []).map(ing=>{
-        const qty = (ing.qty || 0) * factor;
-        const qtyStr = Number.isInteger(qty) ? qty : Math.round(qty);
-        return `<li><strong>${ing.item}</strong> — ${qtyStr} ${ing.unit||''}</li>`;
-      }).join('');
-
-      openOverlay(`
-        <div style="display:flex; justify-content:space-between; align-items:center">
-          <h2 style="margin:0">${iconsForRecipe(rec)} ${rec.name}</h2>
-          <div style="display:flex; gap:8px">
-            <button id="print" class="btn secondary">Stampa</button>
-            <button id="closeFull" class="btn">Chiudi</button>
-          </div>
+  function ensureOverlay(html){
+    let root = document.getElementById('overlay-root');
+    if (!root) { root = document.createElement('div'); root.id='overlay-root'; document.body.appendChild(root); }
+    root.innerHTML = `
+      <div style="position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index:9999; padding:16px">
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; max-width:min(720px,96vw); max-height:92vh; overflow:auto">
+          ${html}
         </div>
-        <div class="small" style="margin:6px 0 10px">
-          ${[...(rec.tags||[])].join(' · ') || '—'}
-        </div>
-
-        <div class="card" style="padding:12px; margin-bottom:12px">
-          <div class="small" style="margin-bottom:6px">Partecipanti (modifica per ricalcolare):</div>
-          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
-            <label class="small">Adulti <input id="adIn" type="number" min="0" class="input" value="${a}" style="width:90px; margin-left:6px"></label>
-            <label class="small">Bambini <input id="kidIn" type="number" min="0" class="input" value="${k}" style="width:90px; margin-left:6px"></label>
-            <div class="small">Porzioni eq: <strong>${servings.toFixed(1)}</strong></div>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:10px">
-          <div class="card" style="padding:12px">
-            <h3 style="margin-top:0">Ingredienti</h3>
-            <ul class="list">${ingredients || '<li class="small">Nessun ingrediente</li>'}</ul>
-          </div>
-          <div class="card" style="padding:12px">
-            <h3 style="margin-top:0">Nutrizione</h3>
-            <div class="small">Kcal per porzione: <strong>${kcalPer ?? 'n.d.'}</strong></div>
-            <div class="small">Kcal totali: <strong>${kcalTot ?? 'n.d.'}</strong></div>
-            <div class="small" style="opacity:.7; margin-top:6px">Le calorie sono mostrate solo se presenti nella ricetta.</div>
-          </div>
-        </div>
-
-        <div class="card" style="padding:12px">
-          <h3 style="margin-top:0">Istruzioni</h3>
-          <div class="small">Aggiungi nel JSON un campo <code>steps</code> per vedere la preparazione qui sotto.</div>
-          <div style="margin-top:6px">${rec.steps ? `<ol>${rec.steps.map(s=>`<li>${s}</li>`).join('')}</ol>` : '<em class="small">Nessuna istruzione disponibile.</em>'}</div>
-        </div>
-      `, { fullscreen:true });
-
-      document.getElementById('closeFull')?.addEventListener('click', closeOverlay);
-      document.getElementById('print')?.addEventListener('click', ()=> window.print());
-      const adIn = document.getElementById('adIn');
-      const kidIn = document.getElementById('kidIn');
-      adIn?.addEventListener('change', ()=>{ a = Math.max(0, +adIn.value||0); renderFull(); });
-      kidIn?.addEventListener('change', ()=>{ k = Math.max(0, +kidIn.value||0); renderFull(); });
-    };
-
-    renderFull();
+      </div>`;
+    root.addEventListener('click', (e)=>{ if (e.target === root.firstElementChild) closeOverlay(); });
+  }
+  function closeOverlay(){
+    const root = document.getElementById('overlay-root');
+    if (root) { root.innerHTML=''; root.remove(); }
   }
 
   return el;
+}
+
+// inietta CSS una sola volta per pagina
+function injectOnce(id, css){
+  if (document.getElementById(id)) return;
+  const s = document.createElement('style');
+  s.id = id; s.textContent = css;
+  document.head.appendChild(s);
 }

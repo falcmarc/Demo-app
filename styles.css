@@ -75,3 +75,9 @@ a,button{ -webkit-tap-highlight-color: transparent; }
 @media (min-width: 900px){
   .bottom-nav .tab{ max-width:140px }
 }
+
+/* Planner: riduci padding celle su schermi stretti */
+@media (max-width: 600px){
+  .cal-table thead th { padding:6px }
+  .cal-table tbody td { padding:6px }
+}
