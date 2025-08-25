@@ -1,115 +1,85 @@
 // src/data/recipes.js
-//
-// Loader ricette per 4 file separati:
-//   colazioni.json, pranzi.json, merende.json, cene.json
-// Robusto per GitHub Pages: prova ./recipes/... e fallback ./public/recipes/...
-// Espone:
-//   - export let RECIPES = []
-//   - export async function getRecipes()
-//   - export async function loadRecipes()
-//
-// Metti i file qui nel repo:
-//   public/recipes/colazioni.json
-//   public/recipes/pranzi.json
-//   public/recipes/merende.json
-//   public/recipes/cene.json
-//
-// Con build tool: saranno serviti come /recipes/...;
-// senza build (Pages “as-is”): /public/recipes/...
-
-const FILES = ['colazioni.json', 'pranzi.json', 'merende.json', 'cene.json'];
-const TRY_DIRS = ['./recipes/', './public/recipes/']; // ordine di tentativo
-
-const LS_KEY_CACHE = 'app.recipes.cache.v2'; // bump per invalidare vecchie cache
+// Carica 4 liste JSON (colazioni, pranzi, merende, cene) da /public/recipes o /recipes
+const FILES = ['colazioni.json','pranzi.json','merende.json','cene.json'];
+const LS_KEY = 'app.recipes.cache.v5';
 const CACHE_MS = 6 * 60 * 60 * 1000; // 6 ore
 
-export let RECIPES = []; // compatibilità moduli legacy
+export let RECIPES = [];
 
-function uniqById(arr) {
-  const seen = new Set();
-  const out = [];
-  for (const r of arr) {
-    if (!r || !r.id) continue;
-    if (!seen.has(r.id)) { seen.add(r.id); out.push(r); }
-  }
-  return out;
+function repoBase() {
+  try {
+    const p = window.location.pathname || '/';
+    const parts = p.split('/').filter(Boolean);
+    return parts.length ? `/${parts[0]}/` : '/';
+  } catch { return '/'; }
 }
 
-async function fetchFirst(paths) {
-  for (const p of paths) {
+async function fetchFirst(urls) {
+  for (const u of urls) {
     try {
-      const res = await fetch(p, { cache: 'no-store' });
-      if (res.ok) return await res.json();
-    } catch (e) {
-      // continua al prossimo
-    }
+      const res = await fetch(u, { cache: 'no-store' });
+      if (res.ok) return res.json();
+      // console.debug('[recipes]', res.status, u);
+    } catch {/* next */}
   }
-  // se nessun path ok, lancia errore con l’ultimo tentativo
-  throw new Error(`Impossibile caricare: ${paths.join(' OR ')}`);
+  throw new Error('Nessun URL valido tra: ' + urls.join(' | '));
 }
 
 async function loadOne(fileName) {
-  // prova entrambe le radici
-  const candidates = TRY_DIRS.map(dir => dir + fileName);
+  const base = repoBase(); // es. /Demo-app/
+  const candidates = [
+    `./public/recipes/${fileName}`,
+    `public/recipes/${fileName}`,
+    `${base}public/recipes/${fileName}`,
+    `./recipes/${fileName}`,
+    `recipes/${fileName}`,
+    `${base}recipes/${fileName}`,
+  ];
   return fetchFirst(candidates);
 }
 
 function readCache() {
   try {
-    const raw = localStorage.getItem(LS_KEY_CACHE);
+    const raw = localStorage.getItem(LS_KEY);
     if (!raw) return null;
     const obj = JSON.parse(raw);
-    if (!obj || !obj.ts || !Array.isArray(obj.items)) return null;
+    if (!obj?.ts || !Array.isArray(obj.items)) return null;
     if (Date.now() - obj.ts > CACHE_MS) return null;
     return obj.items;
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
-
 function writeCache(items) {
-  try {
-    localStorage.setItem(LS_KEY_CACHE, JSON.stringify({ ts: Date.now(), items }));
-  } catch {
-    // no-op
-  }
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ ts: Date.now(), items })); } catch {}
 }
 
 export async function loadRecipes() {
-  // cache localStorage valida?
   const cached = readCache();
-  if (cached) {
-    RECIPES = cached;
-    return RECIPES;
-  }
+  if (cached) { RECIPES = cached; return RECIPES; }
 
-  // fetch dei 4 file (in serie per messaggi d’errore più chiari)
   let all = [];
   for (const fn of FILES) {
     try {
       const arr = await loadOne(fn);
-      if (Array.isArray(arr)) {
-        all = all.concat(arr);
-      } else {
-        console.warn('[recipes] formato inatteso in', fn);
-      }
+      if (Array.isArray(arr)) all = all.concat(arr);
     } catch (e) {
-      console.warn('[recipes] non trovato', fn, e?.message || e);
-      // continuiamo: se manca un file, carichiamo comunque gli altri
+      console.warn('[recipes] non trovato', fn);
     }
   }
 
-  // deduplica e salva
-  RECIPES = uniqById(all);
+  // de-dup per id
+  const seen = new Set();
+  RECIPES = [];
+  for (const r of all) {
+    if (r?.id && !seen.has(r.id)) { seen.add(r.id); RECIPES.push(r); }
+  }
   writeCache(RECIPES);
   return RECIPES;
 }
 
 export async function getRecipes() {
-  // usa la copia in memoria se già disponibile
-  if (RECIPES && RECIPES.length) return RECIPES;
+  if (RECIPES.length) return RECIPES;
   return loadRecipes();
 }
 
-// tentativo non bloccante per scaldare la cache
-loadRecipes().catch(() => {});
+// warm-up non bloccante
+loadRecipes().catch(()=>{});
