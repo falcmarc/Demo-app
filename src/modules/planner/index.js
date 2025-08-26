@@ -6,7 +6,7 @@ import { getRecipes } from '../../data/recipes.js';
 import { loadSettings, kidFactor, dietPredicate } from '../../lib/utils.js';
 import { generateBalancedWeeklyMenu } from '../../lib/balancedMenu.js';
 import { toggleFavorite, getFavorites, getRatings, setRating } from '../../lib/store.js';
-import { computeMacrosAsync } from '../../lib/nutritionService.js';
+import { getPerServingMacros } from '../../lib/kcalLive.js';     // <— IMPORT QUI
 import PieChart from '../../components/PieChart.js';
 
 // giorni IT con indice ISO (lun=1)
@@ -299,8 +299,6 @@ export default function Planner(){
     const { adults, kids } = countsForMeal(settings, mealKey);
     const servings = eqServings(adults, kids, settings.kidsAges);
     const factor   = (servings || 1) / (rec.servings || 2);
-    const kcalPer  = rec.kcalPerServing || null;
-    const kcalTot  = kcalPer ? Math.round(kcalPer * servings) : null;
 
     const ingHTML = (rec.ingredients||[]).map(ing=>{
       const qty = (ing.qty||0)*factor;
@@ -308,11 +306,10 @@ export default function Planner(){
       return `<li><strong>${ing.item}</strong> — ${show} ${ing.unit||''}</li>`;
     }).join('');
 
-    // calcolo macro per porzione (provider esterni con fallback + cache)
-  
-    import { getPerServingMacros } from '../../lib/kcalLive.js';
-
+    // Macro/kcal live (cache + provider)
     const macros = await getPerServingMacros(rec);
+    const kcalPer = macros.perServing.kcal || null;
+    const kcalTot = kcalPer ? Math.round(kcalPer * servings) : null;
 
     const pieData = [
       { key:'Proteine', value: macros.perServing.protein || 0 },
@@ -330,7 +327,7 @@ export default function Planner(){
 
       <div class="small" style="margin:8px 0">
         Porzioni eq famiglia: <strong>${servings.toFixed(1)}</strong>
-        · Kcal/porz (stima): <strong>${macros.perServing.kcal || (kcalPer ?? 'n.d.')}</strong>
+        · Kcal/porz (stima): <strong>${kcalPer ?? 'n.d.'}</strong>
         · Kcal totali (famiglia): <strong>${kcalTot ?? 'n.d.'}</strong>
       </div>
 
@@ -362,7 +359,6 @@ export default function Planner(){
       }
     `);
 
-    // monta grafico nel contenitore
     document.getElementById('pieSlot')?.appendChild(pieWrap);
 
     // preferiti / rating
