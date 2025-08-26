@@ -171,3 +171,33 @@ a,button{ -webkit-tap-highlight-color: transparent; }
 .star.active{ opacity:1 }
 .fav-btn{ background:transparent; border:1px solid var(--border); border-radius:10px; padding:6px 10px; }
 .fav-btn.active{ background:rgba(255,215,0,.15); border-color:rgba(255,215,0,.35) }
+
+/* editor ricette: tabella ingredienti */
+.ing-table{
+  width:100%;
+  border-collapse: collapse;
+  border:1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.ing-table th, .ing-table td{
+  border-bottom:1px solid var(--border);
+  padding:6px;
+  background:#0b0e13;
+}
+.ing-table th{
+  background:var(--card);
+  text-align:left;
+}
+.input.small{ padding:6px 8px; font-size:.95rem }
+
+/* gruppo tag */
+.tags-box{
+  display:flex; gap:10px; flex-wrap:wrap;
+}
+.tags-box label{
+  display:flex; gap:6px; align-items:center;
+  background:#0b0e13; border:1px solid var(--border);
+  padding:6px 10px; border-radius:10px; cursor:pointer;
+}
+.tags-box input{ accent-color: var(--accent); }
