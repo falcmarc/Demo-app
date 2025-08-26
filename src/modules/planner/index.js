@@ -6,6 +6,8 @@ import { getRecipes } from '../../data/recipes.js';
 import { loadSettings, kidFactor, dietPredicate } from '../../lib/utils.js';
 import { generateBalancedWeeklyMenu } from '../../lib/balancedMenu.js';
 import { toggleFavorite, getFavorites, getRatings, setRating } from '../../lib/store.js';
+import { computeMacros, pieFromMacros } from '../../lib/nutrition.js';
+import PieChart from '../../components/PieChart.js';
 
 // giorni IT con indice ISO (lun=1)
 const DAYS  = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
@@ -292,69 +294,91 @@ export default function Planner(){
   let _t = null;
   function renderShoppingDebounced(){ clearTimeout(_t); _t = setTimeout(renderShopping, 150); }
 
-  // mini-anteprima ricetta
-  function openRecipeMini(rec, mealKey){
-    const { adults, kids } = countsForMeal(settings, mealKey);
-    const servings = eqServings(adults, kids, settings.kidsAges);
-    const factor   = (servings || 1) / (rec.servings || 2);
-    const kcalPer  = rec.kcalPerServing || null;
-    const kcalTot  = kcalPer ? Math.round(kcalPer * servings) : null;
+  // mini-anteprima ricetta con grafico macro
+function openRecipeMini(rec, mealKey){
+  const { adults, kids } = countsForMeal(settings, mealKey);
+  const servings = eqServings(adults, kids, settings.kidsAges);
+  const factor   = (servings || 1) / (rec.servings || 2);
+  const kcalPer  = rec.kcalPerServing || null;
+  const kcalTot  = kcalPer ? Math.round(kcalPer * servings) : null;
 
-    const ingHTML = (rec.ingredients||[]).map(ing=>{
-      const qty = (ing.qty||0)*factor;
-      const show = Number.isInteger(qty) ? qty : Math.round(qty);
-      return `<li><strong>${ing.item}</strong> — ${show} ${ing.unit||''}</li>`;
-    }).join('');
+  const ingHTML = (rec.ingredients||[]).map(ing=>{
+    const qty = (ing.qty||0)*factor;
+    const show = Number.isInteger(qty) ? qty : Math.round(qty);
+    return `<li><strong>${ing.item}</strong> — ${show} ${ing.unit||''}</li>`;
+  }).join('');
 
-    const favSet = new Set(getFavorites());
-    const ratings = getRatings();
-    const myRate  = ratings[rec.id] || 0;
+  // ⬇️ Calcolo macro per porzione (in base alle porzioni base della ricetta)
+  const macros = computeMacros(rec.ingredients||[], rec.servings || 2);
+  const pie    = pieFromMacros(macros.perServing);
+  const pieWrap = PieChart(pie, { size: 220 });
 
-    ensureOverlay(`
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px">
-        <h2 style="margin:0">${rec.name}</h2>
-        <button id="miniClose" class="btn secondary">Chiudi</button>
+  const favSet  = new Set(getFavorites());
+  const ratings = getRatings();
+  const myRate  = ratings[rec.id] || 0;
+
+  ensureOverlay(`
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px">
+      <h2 style="margin:0">${rec.name}</h2>
+      <button id="miniClose" class="btn secondary">Chiudi</button>
+    </div>
+
+    <div class="small" style="margin:8px 0">
+      Porzioni eq famiglia: <strong>${servings.toFixed(1)}</strong>
+      · Kcal/porz (ricetta): <strong>${macros.perServing.kcal || (kcalPer ?? 'n.d.')}</strong>
+      · Kcal totali (famiglia): <strong>${kcalTot ?? 'n.d.'}</strong>
+    </div>
+
+    <div style="display:flex; gap:10px; align-items:center; margin:8px 0">
+      <button id="favBtn" class="fav-btn ${favSet.has(rec.id)?'active':''}">⭐ Preferito</button>
+      <div class="stars" id="stars">${[1,2,3,4,5].map(i=>`<span class="star ${i<=myRate?'active':''}" data-v="${i}">★</span>`).join('')}</div>
+      <span class="small" id="rateLabel">${myRate? myRate+'/5' : 'Non valutata'}</span>
+    </div>
+
+    <h3 style="margin:10px 0 6px">Ingredienti</h3>
+    <ul class="list" style="margin-bottom:10px">${ingHTML || '<li class="small">Nessun ingrediente</li>'}</ul>
+
+    <h3 style="margin:10px 0 6px">Valori nutrizionali (per porzione)</h3>
+    <div id="pieSlot" style="display:flex; gap:16px; align-items:center; flex-wrap:wrap">
+      <div class="small">
+        Kcal: <strong>${macros.perServing.kcal || 0}</strong><br/>
+        Proteine: <strong>${macros.perServing.protein || 0} g</strong><br/>
+        Carboidrati: <strong>${macros.perServing.carbs || 0} g</strong>
+        &nbsp;·&nbsp; Zuccheri: <strong>${macros.perServing.sugar || 0} g</strong><br/>
+        Grassi: <strong>${macros.perServing.fat || 0} g</strong>
+        &nbsp;·&nbsp; Sat.: <strong>${macros.perServing.satFat || 0} g</strong><br/>
+        Fibra: <strong>${macros.perServing.fiber || 0} g</strong>
       </div>
+    </div>
 
-      <div class="small" style="margin:8px 0">
-        Porzioni eq: <strong>${servings.toFixed(1)}</strong>
-        · Kcal/porzione: <strong>${kcalPer ?? 'n.d.'}</strong>
-        · Kcal totali: <strong>${kcalTot ?? 'n.d.'}</strong>
-      </div>
+    ${Array.isArray(rec.steps)&&rec.steps.length ? `
+      <h3 style="margin:10px 0 6px">Procedimento</h3>
+      <ol class="list">${rec.steps.map(s=>`<li>${s}</li>`).join('')}</ol>` : ''
+    }
+  `);
 
-      <div style="display:flex; gap:10px; align-items:center; margin:8px 0">
-        <button id="favBtn" class="fav-btn ${favSet.has(rec.id)?'active':''}">⭐ Preferito</button>
-        <div class="stars" id="stars">${[1,2,3,4,5].map(i=>`<span class="star ${i<=myRate?'active':''}" data-v="${i}">★</span>`).join('')}</div>
-        <span class="small" id="rateLabel">${myRate? myRate+'/5' : 'Non valutata'}</span>
-      </div>
+  // Monta il grafico
+  document.getElementById('pieSlot')?.appendChild(pieWrap);
 
-      <h3 style="margin:10px 0 6px">Ingredienti</h3>
-      <ul class="list" style="margin-bottom:10px">${ingHTML || '<li class="small">Nessun ingrediente</li>'}</ul>
+  // Chiudi/pref/rating (come prima)
+  document.getElementById('miniClose')?.addEventListener('click', closeOverlay);
 
-      ${Array.isArray(rec.steps)&&rec.steps.length ? `
-        <h3 style="margin:10px 0 6px">Procedimento</h3>
-        <ol class="list">${rec.steps.map(s=>`<li>${s}</li>`).join('')}</ol>` : ''
-      }
-    `);
+  const favBtn = document.getElementById('favBtn');
+  favBtn?.addEventListener('click', ()=>{
+    const after = new Set(toggleFavorite(rec.id));
+    if (after.has(rec.id)) favBtn.classList.add('active'); else favBtn.classList.remove('active');
+  });
 
-    document.getElementById('miniClose')?.addEventListener('click', closeOverlay);
-
-    const favBtn = document.getElementById('favBtn');
-    favBtn?.addEventListener('click', ()=>{
-      const after = new Set(toggleFavorite(rec.id));
-      if (after.has(rec.id)) favBtn.classList.add('active'); else favBtn.classList.remove('active');
-    });
-
-    const starsEl = document.getElementById('stars');
-    starsEl?.addEventListener('click', (e)=>{
-      const v = +e.target?.dataset?.v || 0;
-      if (!v) return;
-      setRating(rec.id, v);
-      Array.from(starsEl.querySelectorAll('.star')).forEach((s,idx)=> s.classList.toggle('active', idx < v));
-      const lab = document.getElementById('rateLabel');
-      if (lab) lab.textContent = v+'/5';
-    });
-  }
+  const starsEl = document.getElementById('stars');
+  starsEl?.addEventListener('click', (e)=>{
+    const v = +e.target?.dataset?.v || 0;
+    if (!v) return;
+    setRating(rec.id, v);
+    Array.from(starsEl.querySelectorAll('.star')).forEach((s,idx)=> s.classList.toggle('active', idx < v));
+    const lab = document.getElementById('rateLabel');
+    if (lab) lab.textContent = v+'/5';
+  });
+}
 
   // overlay helpers
   function ensureOverlay(html){

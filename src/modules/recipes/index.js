@@ -1,10 +1,11 @@
 // src/modules/recipes/index.js
 // Editor ricette con:
 // - TAG a flag (colazione/pranzo/merenda/cena)
-// - Tabella ingredienti (quantità, unità, ingrediente) con + / −
-// - Kcal/porzione calcolate automaticamente da mini DB (override possibile)
-// - Foto piatto (salvata come dataURL locale)
-// - Sezioni: Preferite / Assegnate / Mie / Pubbliche
+// - Tabella ingredienti
+// - Kcal/porzione calcolate via computeMacros (override possibile)
+// - Foto piatto (DataURL locale)
+// - Vista: Preferite / Assegnate / Mie / Pubbliche
+// - Card con micro-riassunto macro (P/C/Z/F + kcal)
 
 import { getRecipes } from '../../data/recipes.js';
 import {
@@ -14,42 +15,7 @@ import {
   getRatings, setRating
 } from '../../lib/store.js';
 
-/** Mini DB nutrizionale (kcal per 100 g/ml/pezzo).
- *  Il match è per "keyword" in lowercase sull'ingrediente.
- *  Puoi estenderlo liberamente.
- */
-const NUTRITION = [
-  { kw: ['pasta','spaghetti','penne'], unit:'g', kcal100: 350 },
-  { kw: ['riso'], unit:'g', kcal100: 345 },
-  { kw: ['pollo','petto di pollo'], unit:'g', kcal100: 165 },
-  { kw: ['manzo','bovino','carne di manzo'], unit:'g', kcal100: 250 },
-  { kw: ['maiale','carne di maiale'], unit:'g', kcal100: 300 },
-  { kw: ['tonno'], unit:'g', kcal100: 132 },
-  { kw: ['salmon'], unit:'g', kcal100: 208 },
-  { kw: ['uovo','uova'], unit:'pz', kcal100: 155, perPiece: 70 }, // approx 1 uovo ~ 45g, 70 kcal
-  { kw: ['latte'], unit:'ml', kcal100: 64 },
-  { kw: ['olio','olio d\'oliva'], unit:'g', kcal100: 884 },
-  { kw: ['burro'], unit:'g', kcal100: 717 },
-  { kw: ['zucchero'], unit:'g', kcal100: 387 },
-  { kw: ['pomodoro'], unit:'g', kcal100: 18 },
-  { kw: ['cipolla'], unit:'g', kcal100: 40 },
-  { kw: ['aglio'], unit:'g', kcal100: 149 },
-  { kw: ['pane'], unit:'g', kcal100: 265 },
-  { kw: ['yogurt','yoghurt'], unit:'g', kcal100: 60 },
-  { kw: ['mela','mele'], unit:'g', kcal100: 52 },
-  { kw: ['banana','banane'], unit:'g', kcal100: 89 },
-];
-
-/** Trova kcal per 100 unità (g/ml) o per pezzo. */
-function kcalFor(ingredientName, unit){
-  const name = (ingredientName||'').toLowerCase();
-  const u = (unit||'').toLowerCase();
-  const row = NUTRITION.find(r => r.kw.some(k => name.includes(k)));
-  if (!row) return { mode:'unknown', kcal100: null, perPiece: null };
-  if (row.unit === 'pz') return { mode:'piece', perPiece: row.perPiece ?? 70 };
-  // g / ml: stessa logica kcal per 100
-  return { mode: (u==='ml'?'ml':'g'), kcal100: row.kcal100 };
-}
+import { computeMacros } from '../../lib/nutrition.js';
 
 export default function Recipes(){
   const el = document.createElement('div');
@@ -163,7 +129,7 @@ export default function Recipes(){
   let photoDataURL = "";
 
   (async ()=>{
-    ALL = await getRecipes();     // ricette pubbliche dai JSON
+    ALL = await getRecipes();
     render();
   })();
 
@@ -203,10 +169,9 @@ export default function Recipes(){
     const ingredients = readIngRows(); // [{qty, unit, item}]
     const steps = ed.steps.value.split('\n').map(s=>s.trim()).filter(Boolean);
 
-    // kcal: se override uso quello; altrimenti calcolato
     const kcalPerServing = ed.kcalOv.checked
       ? (+ed.kcal.value || null)
-      : (autoKcal(ingredients, serv));
+      : autoKcal(ingredients, serv);
 
     const mine = getMyRecipes();
     if (editId) {
@@ -237,7 +202,7 @@ export default function Recipes(){
     photoDataURL = ''; ed.photo.value=''; ed.photoPrev.src=''; ed.photoPrev.style.display='none';
     ed.tagsBox.querySelectorAll('input').forEach(i=> i.checked = false);
     ed.ingTable.innerHTML = '';
-    addIngRow(); addIngRow(); // due righe iniziali
+    addIngRow(); addIngRow();
     window.scrollTo({ top: el.offsetTop + el.offsetHeight, behavior:'smooth' });
   }
 
@@ -253,10 +218,9 @@ export default function Recipes(){
     ed.ingTable.innerHTML = '';
     (r.ingredients||[]).forEach(ing => addIngRow(ing.qty||0, ing.unit||'g', ing.item||''));
     if (!r.ingredients?.length) addIngRow();
-    // kcal
     ed.kcal.readOnly = true; ed.kcalOv.checked = false;
-    ed.kcal.value = r.kcalPerServing ?? ''; // mostro quello salvato
-    recalcKcalAuto();                       // ricalcolo (non sovrascrive se override)
+    ed.kcal.value = r.kcalPerServing ?? '';
+    recalcKcalAuto();
     window.scrollTo({ top: el.offsetTop + el.offsetHeight, behavior:'smooth' });
   }
 
@@ -313,12 +277,19 @@ export default function Recipes(){
   function card(r, meta){
     const stars = [1,2,3,4,5].map(i=>`<span class="star ${i<=meta.rating?'active':''}" data-v="${i}">★</span>`).join('');
     const photo = r.photo ? `<img src="${r.photo}" alt="" style="width:100%; border-radius:10px; border:1px solid var(--border)">` : '';
+
+    // ⬇️ Micro-riassunto macro (per porzione)
+    const macro = r.ingredients ? computeMacros(r.ingredients, r.servings||2).perServing : null;
+    const macroLine = macro
+      ? `<div class="small">P:${macro.protein}g · C:${macro.carbs}g (Z:${macro.sugar}g) · F:${macro.fat}g · ${macro.kcal} kcal</div>`
+      : '';
+
     const controlsMine = meta.isMine ? `
       <div class="small" style="display:flex; gap:6px; align-items:center; flex-wrap:wrap">
         <label>Visibilità</label>
         <select class="input" data-act="vis" data-id="${r.id}" style="height:36px">
           <option value="private" ${meta.visibility==='private'?'selected':''}>Privata</option>
-          <option value="public" ${meta.visibility==='public'?'selected':''}>Pubblica</option>
+          <option value="public"  ${meta.visibility==='public'?'selected':''}>Pubblica</option>
         </select>
         <button class="btn secondary" data-act="edit" data-id="${r.id}">Modifica</button>
       </div>` : '';
@@ -331,7 +302,7 @@ export default function Recipes(){
           <button class="fav-btn ${meta.fav?'active':''}" data-act="fav" data-id="${r.id}">⭐</button>
         </div>
         <div class="small">${(r.tags||[]).join(' · ')}</div>
-        <div class="small">Kcal/porz: <strong>${r.kcalPerServing ?? 'n.d.'}</strong> · Porzioni base: ${r.servings||2}</div>
+        ${macroLine}
         <div class="stars" data-act="rate" data-id="${r.id}">${stars}</div>
         ${controlsMine}
       </div>`;
@@ -342,8 +313,8 @@ export default function Recipes(){
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><input type="number" class="input small ing-qty" value="${qty}" step="0.1" min="0"></td>
-      <td><input type="text" class="input small ing-unit" value="${unit}"></td>
-      <td><input type="text" class="input small ing-item" value="${item}"></td>
+      <td><input type="text"   class="input small ing-unit" value="${unit}"></td>
+      <td><input type="text"   class="input small ing-item" value="${item}"></td>
       <td><button class="btn secondary ing-del" title="Rimuovi">−</button></td>
     `;
     ed.ingTable.appendChild(tr);
@@ -362,22 +333,12 @@ export default function Recipes(){
   }
 
   function autoKcal(ingredients, servingsBase){
-    // somma kcal totali degli ingredienti
-    let tot = 0;
-    for (const ing of ingredients){
-      const { mode, kcal100, perPiece } = kcalFor(ing.item, ing.unit);
-      if (mode === 'piece' && perPiece && ing.qty){
-        tot += perPiece * ing.qty; // qty = numero pezzi
-      } else if ((mode==='g' || mode==='ml') && kcal100 && ing.qty){
-        tot += (ing.qty * kcal100) / 100;
-      }
-    }
-    const perServing = servingsBase > 0 ? Math.round(tot / servingsBase) : null;
-    return perServing || null;
+    const { perServing } = computeMacros(ingredients, servingsBase);
+    return perServing.kcal || null;
   }
 
   function recalcKcalAuto(){
-    if (ed.kcalOv.checked) return; // se override attivo non toccare
+    if (ed.kcalOv.checked) return;
     const ing = readIngRows();
     const serv = Math.max(1, +ed.serv.value || 2);
     const val = autoKcal(ing, serv);
