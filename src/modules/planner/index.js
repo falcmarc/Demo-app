@@ -1,16 +1,6 @@
 // src/modules/planner/index.js
 //
 // Planner "tipo calendario" compatto + lista spesa (1–4 settimane)
-// - celle più rettangolari e compatte
-// - select ricette più alti (touch-friendly)
-// - header con date reali della settimana
-// - rigenera menu bilanciato
-// - lista spesa aggregata (1, 2, 3, 4 settimane) con copia/esporta
-//
-// Dipendenze già presenti nel progetto:
-//   - getRecipes()             (src/data/recipes.js)
-//   - loadSettings, kidFactor  (src/lib/utils.js)
-//   - generateBalancedWeeklyMenu (src/lib/balancedMenu.js) — se non c'è, il tasto resta ma non rompe
 
 import { getRecipes } from '../../data/recipes.js';
 import { loadSettings, kidFactor, dietPredicate } from '../../lib/utils.js';
@@ -18,26 +8,18 @@ import { generateBalancedWeeklyMenu } from '../../lib/balancedMenu.js';
 import { toggleFavorite, getFavorites, getRatings, setRating } from '../../lib/store.js';
 
 // giorni IT con indice ISO (lun=1)
-const DAYS = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+const DAYS  = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
 const MEALS = ['colazione','pranzo','merenda','cena'];
 
-const PLAN_KEY = 'app.plan.v4'; // bump chiave
-const getPlan = () => JSON.parse(localStorage.getItem(PLAN_KEY) || 'null');
-const setPlan = (p) => localStorage.setItem(PLAN_KEY, JSON.stringify(p));
+const PLAN_KEY = 'app.plan.v4';
+const getPlan  = () => JSON.parse(localStorage.getItem(PLAN_KEY) || 'null');
+const setPlan  = (p) => localStorage.setItem(PLAN_KEY, JSON.stringify(p));
 
-function emptyPlan(){
-  return DAYS.map(()=> Object.fromEntries(MEALS.map(m => [m, { meal:null, excluded:false }])));
-}
+function emptyPlan(){ return DAYS.map(()=> Object.fromEntries(MEALS.map(m => [m, { meal:null, excluded:false }]))); }
 
-// date helper: inizio settimana (lun) per una data
-function startOfWeek(d){
-  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  const day = x.getDay() || 7; // dom=0 -> 7
-  if (day > 1) x.setDate(x.getDate() - (day - 1));
-  x.setHours(0,0,0,0);
-  return x;
-}
-function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+// date helper
+function startOfWeek(d){ const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()); const day=x.getDay()||7; if(day>1)x.setDate(x.getDate()-(day-1)); x.setHours(0,0,0,0); return x; }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
 function fmtShort(d){ return d.toLocaleDateString('it-IT',{ day:'2-digit', month:'2-digit' }); }
 
 // partecipazione/porzioni dal modulo Start
@@ -45,7 +27,6 @@ function countsForMeal(settings, meal) {
   const mode = settings?.participation?.[meal]?.mode || 'tutti';
   const A = settings.adults || 0;
   const K = settings.kids   || 0;
-
   if (mode === 'nessuno') return { adults: 0, kids: 0 };
   if (mode === 'solo_adulti') {
     const a = meal==='pranzo' ? Math.max(0, A - (settings.adultsSkipLunch||0)) : A;
@@ -59,7 +40,6 @@ function countsForMeal(settings, meal) {
     const base = settings.participation?.[meal] || {};
     return { adults: base.adults || 0, kids: base.kids || 0 };
   }
-  // 'tutti'
   const a = meal==='pranzo' ? Math.max(0, A - (settings.adultsSkipLunch||0)) : A;
   const k = meal==='pranzo' ? Math.max(0, K - (settings.kidsSkipLunch||0))   : K;
   return { adults: a, kids: k };
@@ -126,36 +106,15 @@ export default function Planner(){
 
   // CSS mirato per compattare la tabella
   injectOnce('planner-compact-css', `
-    .cal-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 8px;
-      table-layout: fixed;
-    }
-    .cal-table thead th {
-      position: sticky; top: 0; z-index: 1;
-      background: var(--card); border:1px solid var(--border); border-radius:10px;
-      padding: 8px; text-align:center;
-    }
-    .cal-table tbody td {
-      vertical-align: top;
-      background: #0b0e13; border:1px solid var(--border); border-radius:12px;
-      padding: 8px;
-    }
-    .meal-block {
-      display: grid; grid-template-rows: auto auto auto; gap: 6px;
-      height: 180px; /* più rettangolare/compatto, sta a schermo */
-    }
+    .cal-table { width: 100%; border-collapse: separate; border-spacing: 8px; table-layout: fixed; }
+    .cal-table thead th { position: sticky; top: 0; z-index: 1; background: var(--card); border:1px solid var(--border); border-radius:10px; padding: 8px; text-align:center; }
+    .cal-table tbody td { vertical-align: top; background: #0b0e13; border:1px solid var(--border); border-radius:12px; padding: 8px; }
+    .meal-block { display: grid; grid-template-rows: auto auto auto; gap: 6px; height: 180px; }
     .meal-title { font-size: .9rem; color: var(--muted); }
-    .meal-select {
-      width: 100%; height: 44px; /* più alto per touch */
-      background:#0b0e13; color:var(--text); border:1px solid var(--border); border-radius:10px; padding:6px 8px;
-    }
+    .meal-select { width: 100%; height: 44px; background:#0b0e13; color:var(--text); border:1px solid var(--border); border-radius:10px; padding:6px 8px; }
     .meal-actions { display:flex; gap:6px; align-items:center; justify-content:space-between }
     .badge { font-size:.85rem; opacity:.85 }
-    @media (max-width: 900px){
-      .meal-block { height: 200px; }
-    }
+    @media (max-width: 900px){ .meal-block { height: 200px; } }
   `);
 
   const $thead = el.querySelector('#thead');
@@ -169,7 +128,7 @@ export default function Planner(){
   (async () => {
     RECIPES = (await getRecipes()).filter(allow);
     renderCalendar();
-    renderShopping(); // iniziale
+    renderShopping();
   })();
 
   // NAV settimana
@@ -180,15 +139,12 @@ export default function Planner(){
   // Rigenera menu
   el.querySelector('#regen').addEventListener('click', ()=>{
     const plan = getPlan() || emptyPlan();
-    // se c'è generatore, usalo, altrimenti non far nulla
     try {
       if (typeof generateBalancedWeeklyMenu === 'function') {
         const newPlan = generateBalancedWeeklyMenu(RECIPES, settings, plan);
         setPlan(newPlan);
       }
-    } catch (e) {
-      console.warn('[planner] generateBalancedWeeklyMenu error', e);
-    }
+    } catch (e) { console.warn('[planner] generateBalancedWeeklyMenu error', e); }
     renderCalendar();
     renderShopping();
   });
@@ -206,7 +162,7 @@ export default function Planner(){
     $tbody.innerHTML = '';
     $weekLabel.textContent = `${fmtShort(weekStart)} — ${fmtShort(addDays(weekStart,6))}`;
 
-    // intestazione: 1 cella vuota + 7 giorni con data breve
+    // intestazione
     const trH = document.createElement('tr');
     const th0 = document.createElement('th'); th0.textContent = ''; th0.style.minWidth = '120px';
     trH.appendChild(th0);
@@ -227,7 +183,7 @@ export default function Planner(){
       const th = document.createElement('th');
       th.textContent = meal[0].toUpperCase() + meal.slice(1);
       th.style.textAlign='left';
-      $thead.children.length > 0 ? tr.appendChild(th) : null; // compat
+      tr.appendChild(th);
 
       // 7 celle
       for (let dayIdx=0; dayIdx<7; dayIdx++){
@@ -237,7 +193,7 @@ export default function Planner(){
         const wrap = document.createElement('div');
         wrap.className = 'meal-block';
 
-        // 1) titolo + badge
+        // 1) titolo
         const title = document.createElement('div');
         title.className = 'meal-title';
         title.innerHTML = `
@@ -245,17 +201,16 @@ export default function Planner(){
           ${cell.excluded ? `<span class="badge">· <em>escluso</em></span>` : ''}
         `;
 
-        // 2) select ricetta
+        // 2) select
         const sel = document.createElement('select');
         sel.className = 'meal-select';
         sel.innerHTML = `<option value="">— scegli —</option>` + RECIPES
-          .filter(r=> (r.tags||[]).includes(meal)) // priorità matching pasto
-          .concat(RECIPES)                         // fallback tutto
-          .filter((r,i,arr)=> arr.findIndex(a=>a.id===r.id)===i) // dedupe
+          .filter(r=> (r.tags||[]).includes(meal))
+          .concat(RECIPES)
+          .filter((r,i,arr)=> arr.findIndex(a=>a.id===r.id)===i)
           .map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
         sel.value = cell.meal || '';
         sel.disabled = cell.excluded;
-
         sel.addEventListener('change', ()=>{
           const p = getPlan(); p[dayIdx][meal].meal = sel.value || null; setPlan(p);
           renderShoppingDebounced();
@@ -271,7 +226,7 @@ export default function Planner(){
         exChk.addEventListener('change', ()=>{
           const p = getPlan(); p[dayIdx][meal].excluded = exChk.checked; setPlan(p);
           sel.disabled = exChk.checked;
-          renderCalendar(); // per aggiornare badge e stato
+          renderCalendar();
           renderShoppingDebounced();
         });
         exLab.append(exChk, document.createTextNode(' Escludi'));
@@ -286,7 +241,6 @@ export default function Planner(){
         });
 
         actions.append(exLab, detBtn);
-
         wrap.append(title, sel, actions);
         td.appendChild(wrap);
         tr.appendChild(td);
@@ -298,11 +252,9 @@ export default function Planner(){
 
   // ——— Lista spesa ———
   function renderShopping(){
-    // quante settimane prendere (1..4)
     const weeks = Math.max(1, Math.min(4, +$horizon.value || 1));
-
-    // aggrega ingredienti delle settimane a partire da weekStart
     const agg = new Map(); // key=item|unit -> { item, unit, qty }
+
     for (let w=0; w<weeks; w++){
       const plan = getPlan() || emptyPlan();
       for (let d=0; d<7; d++){
@@ -312,7 +264,6 @@ export default function Planner(){
           const rec = RECIPES.find(r => r.id === cell.meal);
           if (!rec) continue;
 
-          // porzioni eq in base alle impostazioni e pasto
           const { adults, kids } = countsForMeal(settings, meal);
           const servingsEq = eqServings(adults, kids, settings.kidsAges);
           const factor = (servingsEq || 1) / (rec.servings || 2);
@@ -343,69 +294,86 @@ export default function Planner(){
 
   // mini-anteprima ricetta
   function openRecipeMini(rec, mealKey){
-  const { adults, kids } = countsForMeal(settings, mealKey);
-  const servings = eqServings(adults, kids, settings.kidsAges);
-  const factor   = (servings || 1) / (rec.servings || 2);
-  const kcalPer  = rec.kcalPerServing || null;
-  const kcalTot  = kcalPer ? Math.round(kcalPer * servings) : null;
+    const { adults, kids } = countsForMeal(settings, mealKey);
+    const servings = eqServings(adults, kids, settings.kidsAges);
+    const factor   = (servings || 1) / (rec.servings || 2);
+    const kcalPer  = rec.kcalPerServing || null;
+    const kcalTot  = kcalPer ? Math.round(kcalPer * servings) : null;
 
-  const ingHTML = (rec.ingredients||[]).map(ing=>{
-    const qty = (ing.qty||0)*factor;
-    const show = Number.isInteger(qty) ? qty : Math.round(qty);
-    return `<li><strong>${ing.item}</strong> — ${show} ${ing.unit||''}</li>`;
-  }).join('');
+    const ingHTML = (rec.ingredients||[]).map(ing=>{
+      const qty = (ing.qty||0)*factor;
+      const show = Number.isInteger(qty) ? qty : Math.round(qty);
+      return `<li><strong>${ing.item}</strong> — ${show} ${ing.unit||''}</li>`;
+    }).join('');
 
-  const favSet = new Set(getFavorites());
-  const ratings = getRatings();
-  const myRate  = ratings[rec.id] || 0;
+    const favSet = new Set(getFavorites());
+    const ratings = getRatings();
+    const myRate  = ratings[rec.id] || 0;
 
-  ensureOverlay(`
-    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px">
-      <h2 style="margin:0">${rec.name}</h2>
-      <button id="miniClose" class="btn secondary">Chiudi</button>
-    </div>
+    ensureOverlay(`
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px">
+        <h2 style="margin:0">${rec.name}</h2>
+        <button id="miniClose" class="btn secondary">Chiudi</button>
+      </div>
 
-    <div class="small" style="margin:8px 0">
-      Porzioni eq: <strong>${servings.toFixed(1)}</strong>
-      · Kcal/porzione: <strong>${kcalPer ?? 'n.d.'}</strong>
-      · Kcal totali: <strong>${kcalTot ?? 'n.d.'}</strong>
-    </div>
+      <div class="small" style="margin:8px 0">
+        Porzioni eq: <strong>${servings.toFixed(1)}</strong>
+        · Kcal/porzione: <strong>${kcalPer ?? 'n.d.'}</strong>
+        · Kcal totali: <strong>${kcalTot ?? 'n.d.'}</strong>
+      </div>
 
-    <div style="display:flex; gap:10px; align-items:center; margin:8px 0">
-      <button id="favBtn" class="fav-btn ${favSet.has(rec.id)?'active':''}">⭐ Preferito</button>
-      <div class="stars" id="stars">${[1,2,3,4,5].map(i=>`<span class="star ${i<=myRate?'active':''}" data-v="${i}">★</span>`).join('')}</div>
-      <span class="small" id="rateLabel">${myRate? myRate+'/5' : 'Non valutata'}</span>
-    </div>
+      <div style="display:flex; gap:10px; align-items:center; margin:8px 0">
+        <button id="favBtn" class="fav-btn ${favSet.has(rec.id)?'active':''}">⭐ Preferito</button>
+        <div class="stars" id="stars">${[1,2,3,4,5].map(i=>`<span class="star ${i<=myRate?'active':''}" data-v="${i}">★</span>`).join('')}</div>
+        <span class="small" id="rateLabel">${myRate? myRate+'/5' : 'Non valutata'}</span>
+      </div>
 
-    <h3 style="margin:10px 0 6px">Ingredienti</h3>
-    <ul class="list" style="margin-bottom:10px">${ingHTML || '<li class="small">Nessun ingrediente</li>'}</ul>
+      <h3 style="margin:10px 0 6px">Ingredienti</h3>
+      <ul class="list" style="margin-bottom:10px">${ingHTML || '<li class="small">Nessun ingrediente</li>'}</ul>
 
-    ${Array.isArray(rec.steps)&&rec.steps.length ? `
-      <h3 style="margin:10px 0 6px">Procedimento</h3>
-      <ol class="list">${rec.steps.map(s=>`<li>${s}</li>`).join('')}</ol>` : ''
-    }
-  `);
+      ${Array.isArray(rec.steps)&&rec.steps.length ? `
+        <h3 style="margin:10px 0 6px">Procedimento</h3>
+        <ol class="list">${rec.steps.map(s=>`<li>${s}</li>`).join('')}</ol>` : ''
+      }
+    `);
 
-  document.getElementById('miniClose')?.addEventListener('click', closeOverlay);
+    document.getElementById('miniClose')?.addEventListener('click', closeOverlay);
 
-  const favBtn = document.getElementById('favBtn');
-  favBtn?.addEventListener('click', ()=>{
-    const after = new Set(toggleFavorite(rec.id));
-    if (after.has(rec.id)) favBtn.classList.add('active'); else favBtn.classList.remove('active');
-  });
-
-  const starsEl = document.getElementById('stars');
-  starsEl?.addEventListener('click', (e)=>{
-    const v = +e.target?.dataset?.v || 0;
-    if (!v) return;
-    setRating(rec.id, v);
-    // refresh stelle
-    Array.from(starsEl.querySelectorAll('.star')).forEach((s,idx)=>{
-      s.classList.toggle('active', idx < v);
+    const favBtn = document.getElementById('favBtn');
+    favBtn?.addEventListener('click', ()=>{
+      const after = new Set(toggleFavorite(rec.id));
+      if (after.has(rec.id)) favBtn.classList.add('active'); else favBtn.classList.remove('active');
     });
-    const lab = document.getElementById('rateLabel');
-    if (lab) lab.textContent = v+'/5';
-  });
+
+    const starsEl = document.getElementById('stars');
+    starsEl?.addEventListener('click', (e)=>{
+      const v = +e.target?.dataset?.v || 0;
+      if (!v) return;
+      setRating(rec.id, v);
+      Array.from(starsEl.querySelectorAll('.star')).forEach((s,idx)=> s.classList.toggle('active', idx < v));
+      const lab = document.getElementById('rateLabel');
+      if (lab) lab.textContent = v+'/5';
+    });
+  }
+
+  // overlay helpers
+  function ensureOverlay(html){
+    let root = document.getElementById('overlay-root');
+    if (!root) { root = document.createElement('div'); root.id='overlay-root'; document.body.appendChild(root); }
+    root.innerHTML = `
+      <div style="position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index:9999; padding:16px">
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; max-width:min(720px,96vw); max-height:92vh; overflow:auto">
+          ${html}
+        </div>
+      </div>`;
+    root.addEventListener('click', (e)=>{ if (e.target === root.firstElementChild) closeOverlay(); });
+  }
+  function closeOverlay(){
+    const root = document.getElementById('overlay-root');
+    if (root) { root.innerHTML=''; root.remove(); }
+  }
+
+  return el;
 }
 
 // inietta CSS una sola volta per pagina
