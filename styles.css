@@ -164,3 +164,10 @@ a,button{ -webkit-tap-highlight-color: transparent; }
   .bottom-nav .tab{ max-width:140px }
   .meal-block{ height:200px; }      /* un po' più alta su mobile stretto */
 }
+
+/* rating a stelline + badge preferito */
+.stars{ display:inline-flex; gap:4px; cursor:pointer; user-select:none }
+.star{ font-size:1.1rem; opacity:.6 }
+.star.active{ opacity:1 }
+.fav-btn{ background:transparent; border:1px solid var(--border); border-radius:10px; padding:6px 10px; }
+.fav-btn.active{ background:rgba(255,215,0,.15); border-color:rgba(255,215,0,.35) }
