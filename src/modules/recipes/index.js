@@ -160,21 +160,19 @@ export default function Recipes(){
 
   // salva ricetta
   ed.save.addEventListener('click', ()=>{
-    const tags = Array.from(ed.tagsBox.querySelectorAll('input:checked')).map(c=>c.value);
-    const obj = {
-      id: 'r'+Date.now(),
-      name: ed.name.value.trim(),
-      tags,
-      servings: Math.max(1, +ed.serv.value || 2),
-      kcalPerServing: +ed.kcal.value || null,
-      ingredients: readIngRows(),
-      steps: (ed.steps.value||'').split('\n').map(s=>s.trim()).filter(Boolean),
-      photo: ed.photoPrev.querySelector('img')?.src || null
-    };
-    const all = loadRecipes();
-    all.push(obj);
-    saveRecipes(all);
-    alert('Ricetta salvata!');
+    const override = ed.kcalOv.checked;
+const kcalField = override ? (+ed.kcal.value || null) : null;
+
+const obj = {
+  id: 'r'+Date.now(),
+  name: ed.name.value.trim(),
+  tags,
+  servings: Math.max(1, +ed.serv.value || 2),
+  kcalPerServing: kcalField,             // <— null se non override
+  ingredients: readIngRows(),
+  steps: (ed.steps.value||'').split('\n').map(s=>s.trim()).filter(Boolean),
+  photo: ed.photoPrev.querySelector('img')?.src || null
+};
   });
 
   ed.cancel.addEventListener('click', ()=> window.location.hash = '#/planner');

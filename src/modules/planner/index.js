@@ -309,7 +309,11 @@ export default function Planner(){
     }).join('');
 
     // calcolo macro per porzione (provider esterni con fallback + cache)
-    const macros = await computeMacrosAsync(rec.ingredients || [], rec.servings || 2);
+  
+    import { getPerServingMacros } from '../../lib/kcalLive.js';
+
+    const macros = await getPerServingMacros(rec);
+
     const pieData = [
       { key:'Proteine', value: macros.perServing.protein || 0 },
       { key:'Zuccheri', value: macros.perServing.sugar   || 0 },
