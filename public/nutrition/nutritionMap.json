@@ -1,0 +1,67 @@
+{
+  "pasta": "pasta, dry",
+  "spaghetti": "spaghetti, dry",
+  "riso": "rice, white, uncooked",
+  "riso basmati": "rice, basmati, uncooked",
+  "farro": "spelt, uncooked",
+  "orzo": "barley, pearled, uncooked",
+  "cous cous": "couscous, dry",
+  "quinoa": "quinoa, uncooked",
+
+  "uovo": "egg, whole, raw",
+  "uova": "egg, whole, raw",
+  "tuorlo": "egg, yolk, raw",
+  "albume": "egg white, raw",
+
+  "latte": "milk, whole",
+  "latte scremato": "milk, nonfat",
+  "yogurt": "yogurt, plain, whole milk",
+  "yogurt greco": "greek yogurt, plain",
+
+  "olio extravergine": "olive oil",
+  "olio di oliva": "olive oil",
+  "burro": "butter, salted",
+
+  "zucchero": "sugar, granulated",
+  "sale": "salt, table",
+  "pepe": "pepper, black",
+
+  "pomodoro": "tomato, raw",
+  "passata di pomodoro": "tomato sauce, canned",
+  "cipolla": "onion, raw",
+  "aglio": "garlic, raw",
+  "carota": "carrot, raw",
+  "zucchina": "zucchini, raw",
+  "melanzana": "eggplant, raw",
+  "patata": "potato, raw",
+  "spinaci": "spinach, raw",
+  "lattuga": "lettuce, green leaf, raw",
+
+  "tonno": "tuna, canned in water, drained",
+  "salmone": "salmon, raw",
+  "pollo": "chicken breast, raw",
+  "tacchino": "turkey, breast, raw",
+  "manzo": "beef, ground, 10% fat, raw",
+  "maiale": "pork, loin, raw",
+  "guanciale": "pork jowl (guanciale), raw",
+  "pancetta": "bacon, raw",
+
+  "parmigiano": "parmesan cheese",
+  "pecorino": "pecorino cheese",
+  "mozzarella": "mozzarella cheese, whole milk",
+  "ricotta": "ricotta cheese, whole milk",
+
+  "pane": "bread, white",
+  "pane integrale": "bread, whole-wheat",
+  "farina 00": "wheat flour, all-purpose",
+  "farina integrale": "whole-wheat flour",
+
+  "miele": "honey",
+  "banana": "banana, raw",
+  "mela": "apple, raw",
+  "pera": "pear, raw",
+  "arancia": "orange, raw",
+  "limone": "lemon, raw",
+
+  "pesto": "pesto sauce, commercial"
+}
