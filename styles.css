@@ -201,3 +201,54 @@ a,button{ -webkit-tap-highlight-color: transparent; }
   padding:6px 10px; border-radius:10px; cursor:pointer;
 }
 .tags-box input{ accent-color: var(--accent); }
+
+/* ===== Planner responsive & controls ===== */
+.view-switch, .mode-switch{
+  display:flex; gap:6px; align-items:center; flex-wrap:wrap;
+}
+.chip{
+  background:transparent; color:var(--text); border:1px solid var(--border);
+  border-radius:999px; padding:6px 10px; cursor:pointer; font-size:.92rem;
+}
+.chip.active{ background:rgba(79,140,255,.18); border-color:rgba(79,140,255,.35) }
+
+.meal-select{
+  width:100%; height:52px;             /* più grande */
+  background:#0b0e13; color:var(--text);
+  border:1px solid var(--border); border-radius:12px; padding:8px 10px;
+  font-size:1rem;
+}
+.btn-ghost{
+  background:transparent; color:var(--accent); border:none; padding:4px 6px;
+  font-size:.9rem; cursor:pointer;
+}
+.ex-small label, .ex-small input{ transform: scale(.95); transform-origin:left center }
+.ex-small label{ font-size:.9rem }
+
+.meal-block{
+  display:grid; grid-template-rows:auto auto auto; gap:8px; height:190px;
+}
+
+@media (max-width: 900px){
+  .meal-block{ height: 210px; }
+}
+
+/* Giornaliera / 3-giorni layout */
+.day-card{
+  background:#0b0e13; border:1px solid var(--border); border-radius:14px; padding:12px;
+}
+.day-grid{
+  display:grid; gap:12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 720px){
+  .day-grid{ grid-template-columns: 1fr; }
+}
+
+/* “lista nutrienti” compatta su settimanale mobile */
+.day-nutri{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  background:#0b0e13; border:1px solid var(--border); border-radius:12px; padding:10px;
+}
+.day-nutri-title{ font-size:.95rem; color:var(--muted) }
+.day-nutri-chart{ width:120px; height:120px; }
