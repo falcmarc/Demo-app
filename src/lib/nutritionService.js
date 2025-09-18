@@ -1,50 +1,39 @@
 // src/lib/nutritionService.js
 //
-// Calcolo macro/kcal da ingredienti con:
-//  - mapping IT/EN (nutritionMap.json)
-//  - conversione unità (g, ml, pz → g/ml) con pesi medi
-//  - query ai provider: OpenFoodFacts -> USDA (fallback)
-//  - output dettagliato: totale, per porzione, per-ingrediente (con pezzi+grammi)
-//
-// Dipendenze opzionali: src/config.js con { USDA_API_KEY?: string }
+// Miglioramenti:
+// - mapping preferito per pollo/petto (stima più realistica)
+// - kcal arrotondate a 0 decimali in output (viste)
+// - macro per-ingrediente con display quantità (pz→g, ml→g)
 
-import CONFIG from '../config.js'; // può essere { USDA_API_KEY: '...' } o vuoto
+import CONFIG from '../config.js'; // può essere {} se non usi USDA
 
-const MAP_URL = '/Demo-app/public/nutrition/nutritionMap.json';   // ↙ adatta al tuo repo
-// Se deploy in sottocartella diversa, valuta path relativo: './public/nutrition/nutritionMap.json'
+const MAP_URL = './public/nutrition/nutritionMap.json';
 
-/* ---------- Pesi medi per 'pz' (in grammi) ---------- */
 const PIECE_WEIGHTS = {
-  uovo: 60, uova: 60, "uovo medio": 60, "egg": 60, "eggs": 60,
+  uovo: 60, uova: 60, "uovo medio": 60, egg: 60, eggs: 60,
   banana: 120, mela: 150, pera: 170, arancia: 180, limone: 100,
   carota: 60, cipolla: 80, patata: 170, zucchina: 150, pomodoro: 120,
-  aglio: 5,
-  // salumi/carni “a fetta” (stima)
-  "fetta prosciutto": 25, "fetta pancetta": 25, "fetta guanciale": 25,
+  aglio: 5, "fetta prosciutto": 25, "fetta pancetta": 25, "fetta guanciale": 25,
 };
 
-/* ---------- Densità per ml -> g (stima) ---------- */
 const DENSITY = {
-  "acqua": 1.0, "water": 1.0,
-  "latte": 1.03, "milk": 1.03,
-  "olio": 0.91, "olio extravergine": 0.91, "olive oil": 0.91,
-  "miele": 1.42, "honey": 1.42,
-  "yogurt": 1.05, "yogurt greco": 1.03
+  acqua: 1.0, water: 1.0,
+  latte: 1.03, milk: 1.03,
+  olio: 0.91, "olio extravergine": 0.91, "olive oil": 0.91,
+  miele: 1.42, honey: 1.42,
+  yogurt: 1.05, "yogurt greco": 1.03
 };
 
-/* ---------- Cache in memoria ---------- */
-const cache = new Map(); // key -> { ts, data }
-const TTL_MS = 30 * 24*60*60*1000; // 30 giorni
+const cache = new Map();
+const TTL_MS = 30*24*60*60*1000;
 
-/* ---------- Util ---------- */
 const sleep = (ms)=> new Promise(r=>setTimeout(r, ms));
-function now(){ return Date.now(); }
-function fromCache(key){ const v=cache.get(key); return v && (now()-v.ts<TTL_MS) ? v.data : null; }
-function toCache(key,data){ cache.set(key, { ts:now(), data }); }
-function norm(s){ return (s||'').toLowerCase().trim(); }
-function safeNum(x){ const n=+x; return Number.isFinite(n) ? n : 0; }
+const now = ()=> Date.now();
+const fromCache = k => { const v=cache.get(k); return v && (now()-v.ts<TTL_MS) ? v.data : null; };
+const toCache   = (k,d)=> cache.set(k,{ts:now(),data:d});
+const norm = s => (s||'').toLowerCase().trim();
+const safeNum = x => { const n=+x; return Number.isFinite(n) ? n : 0; };
 
-/* ---------- Carica mapping IT/EN ---------- */
 let NAME_MAP = null;
 async function loadNameMap(){
   if (NAME_MAP) return NAME_MAP;
@@ -53,15 +42,22 @@ async function loadNameMap(){
     if (!res.ok) throw new Error(res.status);
     NAME_MAP = await res.json();
   } catch (e) {
-    console.warn('[nutrition] mapping non disponibile, proseguo senza', e);
+    console.warn('[nutrition] mapping non disponibile', e);
     NAME_MAP = {};
   }
   return NAME_MAP;
 }
 
-/* ---------- Conversioni quantità ---------- */
+// Preferenze "forti" per alcune chiavi (bypassano il mapping generico)
+const PREFERRED_MAP = {
+  'pollo': 'chicken, raw',
+  'petto di pollo': 'chicken breast, raw',
+  'petto pollo': 'chicken breast, raw',
+  'coscia di pollo': 'chicken, dark meat, raw',
+  'cosce di pollo': 'chicken, dark meat, raw',
+};
+
 function gramsFromMl(item, ml){
-  // prova match densità per nome
   const n = norm(item);
   const key = Object.keys(DENSITY).find(k => n.includes(k));
   const dens = key ? DENSITY[key] : 1.0;
@@ -69,65 +65,44 @@ function gramsFromMl(item, ml){
 }
 function gramsFromPieces(item, pz){
   const n = norm(item);
-  // match più specifico
   const key = Object.keys(PIECE_WEIGHTS).find(k => n.includes(k));
-  const g = key ? PIECE_WEIGHTS[key] : 50; // default prudente
+  const g = key ? PIECE_WEIGHTS[key] : 50;
   return pz * g;
 }
-
-/**
- * Converte una riga ingrediente in grammi.
- * Ritorna anche un testo “originale → stimato”, es. “2 pz (≈120 g)”.
- */
 function normalizeAmount(ing){
   const qty = safeNum(ing.qty);
   const unit = norm(ing.unit);
   const item = ing.item || '';
-
-  if (unit === 'g' || unit === 'grammi' || unit === 'gr') {
-    return { grams: qty, ml: 0, display: `${qty} g`, note: null };
-  }
-  if (unit === 'ml') {
-    const g = gramsFromMl(item, qty);
-    return { grams: g, ml: qty, display: `${qty} ml (≈${Math.round(g)} g)`, note: 'densità stimata' };
-  }
-  if (unit === 'pz' || unit === 'pezzi' || unit === 'pezzo') {
-    const g = gramsFromPieces(item, qty);
-    return { grams: g, ml: 0, display: `${qty} pz (≈${Math.round(g)} g)`, note: 'peso medio per pezzo' };
-  }
-  // fallback: trattalo come grammi
-  return { grams: qty, ml: 0, display: `${qty} ${ing.unit||''}`.trim(), note: 'unità non riconosciuta (assumo grammi)' };
+  if (unit === 'g' || unit === 'grammi' || unit === 'gr') return { grams: qty, ml: 0, display: `${qty} g`, note: null };
+  if (unit === 'ml') { const g = gramsFromMl(item, qty); return { grams:g, ml:qty, display:`${qty} ml (≈${Math.round(g)} g)`, note:'densità stimata' }; }
+  if (unit === 'pz' || unit === 'pezzi' || unit === 'pezzo') { const g = gramsFromPieces(item, qty); return { grams:g, ml:0, display:`${qty} pz (≈${Math.round(g)} g)`, note:'peso medio' }; }
+  return { grams: qty, ml: 0, display: `${qty} ${ing.unit||''}`.trim(), note:'unità non riconosciuta (assumo g)' };
 }
 
-/* ---------- Mapping nome IT -> EN / canonical ---------- */
 async function mapName(item){
-  const map = await loadNameMap();
   const n = norm(item);
-  // match esatto
+  // preferenze forti
+  for (const k of Object.keys(PREFERRED_MAP)) if (n.includes(k)) return PREFERRED_MAP[k];
+  const map = await loadNameMap();
   if (map[n]) return map[n];
-  // prova match contains
   const key = Object.keys(map).find(k => n.includes(k));
-  return map[key] || item; // se niente, usa l’originale
+  return map[key] || item;
 }
 
-/* ---------- Provider: OFF ---------- */
+/* -------- Providers -------- */
+
 async function providerOFF(search, grams){
   const key = `off:${search}`;
-  const hit = fromCache(key);
-  if (hit) return hit;
-
+  const hit = fromCache(key); if (hit) return hit;
   const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(search)}&search_simple=1&json=1&page_size=1`;
   const res = await fetch(url);
   if (!res.ok) throw new Error('OFF HTTP ' + res.status);
   const js = await res.json();
-
   const p = js?.products?.[0];
-  if (!p) throw new Error('OFF: nessun risultato');
-
-  // valori per 100g
+  if (!p) throw new Error('OFF: no result');
   const nutr = p['nutriments'] || {};
   const per100 = {
-    kcal: safeNum(nutr['energy-kcal_100g'] ?? nutr['energy_100g'] ? nutr['energy_100g']/4.184 : 0),
+    kcal: safeNum(nutr['energy-kcal_100g'] ?? (nutr['energy_100g'] ? nutr['energy_100g']/4.184 : 0)),
     protein: safeNum(nutr['proteins_100g']),
     carbs: safeNum(nutr['carbohydrates_100g']),
     sugar: safeNum(nutr['sugars_100g']),
@@ -145,21 +120,25 @@ async function providerOFF(search, grams){
   return out;
 }
 
-/* ---------- Provider: USDA ---------- */
 async function providerUSDA(search, grams){
-  if (!CONFIG?.USDA_API_KEY) throw new Error('USDA: manca API key');
+  if (!CONFIG?.USDA_API_KEY) throw new Error('USDA: missing key');
   const key = `usda:${search}`;
-  const hit = fromCache(key);
-  if (hit) return hit;
-
-  const url = `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${CONFIG.USDA_API_KEY}&query=${encodeURIComponent(search)}&pageSize=1`;
+  const hit = fromCache(key); if (hit) return hit;
+  const url = `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${CONFIG.USDA_API_KEY}&query=${encodeURIComponent(search)}&pageSize=5`;
   const res = await fetch(url);
   if (!res.ok) throw new Error('USDA HTTP ' + res.status);
   const js = await res.json();
-  const f = js?.foods?.[0];
-  if (!f) throw new Error('USDA: nessun risultato');
-
-  // nutrients array contiene value per 100g
+  let f = (js?.foods || [])[0];
+  // se cerco petto di pollo preferisco "breast" e "raw"
+  const q = norm(search);
+  if (js?.foods?.length) {
+    const candidates = js.foods;
+    const pref = candidates.find(x => /breast/i.test(x.description) && /raw/i.test(x.description)) ||
+                 candidates.find(x => /chicken/i.test(x.description) && /raw/i.test(x.description)) ||
+                 candidates[0];
+    f = pref;
+  }
+  if (!f) throw new Error('USDA: no result');
   const getN = (name) => {
     const n = (f.foodNutrients || []).find(n => norm(n.nutrientName).includes(name));
     return safeNum(n?.value);
@@ -171,7 +150,7 @@ async function providerUSDA(search, grams){
     sugar: getN('sugar'),
     fat: getN('total lipid') || getN('fat'),
     satFat: getN('saturated'),
-    fiber: getN('fiber')
+    fiber: getN('fiber'),
   };
   const factor = grams/100;
   const out = {
@@ -183,44 +162,28 @@ async function providerUSDA(search, grams){
   return out;
 }
 
-/* ---------- Macro per singolo ingrediente ---------- */
-async function macrosForIngredient(ing){
-  // 1) quantità → grammi
-  const conv = normalizeAmount(ing);        // { grams, ml, display, note }
-  const grams = conv.grams || 0;
+/* -------- per-ingrediente -------- */
 
+async function macrosForIngredient(ing){
+  const conv = normalizeAmount(ing);
+  const grams = conv.grams || 0;
   if (!grams) {
     return { ok:false, reason:'quantità non valida', conv, search:ing.item, source:null, macros:emptyMacros() };
   }
-
-  // 2) mapping IT/EN
   const canonical = await mapName(ing.item);
-
-  // 3) provider: OFF → (se KO) USDA
-  let res = null, source=null, err=null;
+  let res=null, err=null;
   try {
     res = await providerOFF(canonical, grams);
-    source = res._source;
   } catch(e1){
-    try{
-      // rallenta leggermente prima del fallback
-      await sleep(150);
-      res = await providerUSDA(canonical, grams);
-      source = res._source;
-    } catch(e2){
-      err = `${e1?.message || e1} | ${e2?.message || e2}`;
-    }
+    try{ await sleep(120); res = await providerUSDA(canonical, grams); }
+    catch(e2){ err = `${e1?.message||e1} | ${e2?.message||e2}`; }
   }
-
-  if (!res) {
-    return { ok:false, reason:err||'nessun provider', conv, search:canonical, source:null, macros:emptyMacros() };
-  }
-
+  if (!res) return { ok:false, reason:err||'nessun provider', conv, search:canonical, source:null, macros:emptyMacros() };
   const out = {
     ok: true,
-    conv,                  // info su conversione (mostra “2 pz (≈120 g)”)
-    search: canonical,     // query usata
-    source,
+    conv,
+    search: canonical,
+    source: res._source,
     macros: {
       kcal: res.kcal, protein: res.protein, carbs: res.carbs, sugar: res.sugar,
       fat: res.fat, satFat: res.satFat, fiber: res.fiber
@@ -229,23 +192,13 @@ async function macrosForIngredient(ing){
   return out;
 }
 
-function emptyMacros(){
-  return { kcal:0, protein:0, carbs:0, sugar:0, fat:0, satFat:0, fiber:0 };
-}
+function emptyMacros(){ return { kcal:0, protein:0, carbs:0, sugar:0, fat:0, satFat:0, fiber:0 }; }
 
-/* ---------- API principale ---------- */
+/* -------- API -------- */
+
 /**
  * ingredients: [{ qty, unit:'g|ml|pz', item }, ...]
- * servings: porzioni base della ricetta
- *
- * Ritorna:
- * {
- *   total: {...},
- *   perServing: {...},
- *   items: [
- *     { name, original:{qty,unit}, displayQty, grams, source, ok, macros:{...}, note? }
- *   ]
- * }
+ * servings: porzioni base
  */
 export async function computeMacrosAsync(ingredients = [], servings = 2){
   const itemsOut = [];
@@ -254,11 +207,7 @@ export async function computeMacrosAsync(ingredients = [], servings = 2){
   for (const ing of ingredients) {
     const r = await macrosForIngredient(ing);
     const grams = r.conv?.grams || 0;
-
-    // somma se ok
-    if (r.ok) {
-      Object.keys(agg).forEach(k => { agg[k] += r.macros[k]; });
-    }
+    if (r.ok) Object.keys(agg).forEach(k => { agg[k] += r.macros[k]; });
 
     itemsOut.push({
       name: ing.item,
@@ -273,10 +222,23 @@ export async function computeMacrosAsync(ingredients = [], servings = 2){
     });
   }
 
-  const per = {};
-  Object.keys(agg).forEach(k => per[k] = servings ? (agg[k] / servings) : 0);
+  // arrotondamenti in output
+  const total = {
+    kcal: Math.round(agg.kcal),
+    protein: Math.round(agg.protein*10)/10,
+    carbs: Math.round(agg.carbs*10)/10,
+    sugar: Math.round(agg.sugar*10)/10,
+    fat: Math.round(agg.fat*10)/10,
+    satFat: Math.round(agg.satFat*10)/10,
+    fiber: Math.round(agg.fiber*10)/10,
+  };
+  const perServing = {};
+  Object.keys(total).forEach(k => {
+    const v = servings ? total[k] / servings : 0;
+    perServing[k] = (k==='kcal') ? Math.round(v) : Math.round(v*10)/10;
+  });
 
-  return { total: agg, perServing: per, items: itemsOut };
+  return { total, perServing, items: itemsOut };
 }
 
 export default { computeMacrosAsync };

@@ -1,190 +1,241 @@
 // src/modules/recipes/index.js
-//
-// Editor ricette con flag tags, tabella ingredienti, kcal auto da computeMacrosAsync
-//
+// Elenco ricette + Preferite + "Le mie ricette" (CRUD in localStorage)
 
-import { computeMacrosAsync } from '../../lib/nutritionService.js';
+import { getRecipes } from '../../data/recipes.js';
+import { toggleFavorite, getFavorites } from '../../lib/store.js';
+import { loadSettings, dietPredicate } from '../../lib/utils.js';
 
-const TAGS = ['Colazione','Pranzo','Merenda','Cena'];
-const RECIPES_KEY = 'app.recipes';
+const MY_KEY = 'app.myRecipes.v1';
 
-function loadRecipes(){ return JSON.parse(localStorage.getItem(RECIPES_KEY) || '[]'); }
-function saveRecipes(r){ localStorage.setItem(RECIPES_KEY, JSON.stringify(r)); }
+function loadMy(){ return JSON.parse(localStorage.getItem(MY_KEY) || '[]'); }
+function saveMy(arr){ localStorage.setItem(MY_KEY, JSON.stringify(arr)); }
+function uid(){ return 'my_' + Math.random().toString(36).slice(2,9); }
 
-export default function Recipes(){
+export default function RecipesPage(){
   const el = document.createElement('div');
   el.className = 'card';
   el.innerHTML = `
-    <h1>Nuova ricetta</h1>
-
-    <div style="display:grid; gap:12px">
-      <label>Nome
-        <input id="r-name" class="input" placeholder="Titolo ricetta">
-      </label>
-
-      <div>
-        <span class="small">Tags (flag)</span><br>
-        <div id="r-tags" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px"></div>
-      </div>
-
-      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center">
-        <label>Kcal/porzione
-          <input id="r-kcal" class="input small" placeholder="auto" style="width:100px">
-        </label>
-        <label><input type="checkbox" id="r-kcal-ov"> override</label>
-        <label>Porzioni base
-          <input id="r-serv" type="number" class="input small" value="2" min="1" style="width:80px">
-        </label>
-      </div>
-
-      <div>
-        <span class="small">Ingredienti</span>
-        <table id="r-ing" style="width:100%; margin-top:6px; border-spacing:6px">
-          <thead>
-            <tr><th>Quantità</th><th>Unità</th><th>Ingrediente</th><th></th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <button id="r-addIng" class="btn secondary">+ Aggiungi ingrediente</button>
-        <div class="small">Unità supportate: g, ml, pz (pezzi)</div>
-      </div>
-
-      <div>
-        <span class="small">Procedimento</span>
-        <textarea id="r-steps" class="input" rows="4" placeholder="Uno step per riga"></textarea>
-      </div>
-
-      <div>
-        <span class="small">Foto del piatto</span><br>
-        <input type="file" id="r-photo" accept="image/*">
-        <div id="r-photoPreview" style="margin-top:8px"></div>
-      </div>
-
-      <div style="display:flex; gap:10px; margin-top:12px">
-        <button id="r-save" class="btn">Salva</button>
-        <button id="r-cancel" class="btn secondary">Annulla</button>
-      </div>
+    <h1>Ricette</h1>
+    <div style="display:flex; gap:8px; margin:8px 0; flex-wrap:wrap">
+      <button class="chip active" data-tab="all">Tutte</button>
+      <button class="chip" data-tab="fav">Preferite</button>
+      <button class="chip" data-tab="mine">Le mie ricette</button>
+      <button id="addBtn" class="btn" style="margin-left:auto">+ Nuova ricetta</button>
     </div>
+    <div id="list" style="display:grid; gap:10px"></div>
   `;
 
-  // refs
-  const ed = {
-    name: el.querySelector('#r-name'),
-    kcal: el.querySelector('#r-kcal'),
-    kcalOv: el.querySelector('#r-kcal-ov'),
-    serv: el.querySelector('#r-serv'),
-    ingTable: el.querySelector('#r-ing tbody'),
-    addIng: el.querySelector('#r-addIng'),
-    steps: el.querySelector('#r-steps'),
-    save: el.querySelector('#r-save'),
-    cancel: el.querySelector('#r-cancel'),
-    tagsBox: el.querySelector('#r-tags'),
-    photo: el.querySelector('#r-photo'),
-    photoPrev: el.querySelector('#r-photoPreview')
-  };
+  const $list = el.querySelector('#list');
+  const tabs = el.querySelectorAll('[data-tab]');
+  const addBtn = el.querySelector('#addBtn');
+  let tab = 'all';
 
-  // render tags come flag
-  TAGS.forEach(tag=>{
-    const id = 'tag_'+tag.toLowerCase();
-    const lbl = document.createElement('label');
-    lbl.innerHTML = `<input type="checkbox" value="${tag}"> ${tag}`;
-    ed.tagsBox.appendChild(lbl);
-  });
+  tabs.forEach(t => t.addEventListener('click', ()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    tab = t.dataset.tab;
+    render();
+  }));
 
-  // aggiungi riga ingrediente
-  function addIngRow(qty=0, unit='g', item=''){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input type="number" class="input small ing-qty" value="${qty}" step="0.1" min="0"></td>
-      <td><input type="text"   class="input small ing-unit" value="${unit}"></td>
-      <td><input type="text"   class="input small ing-item" value="${item}"></td>
-      <td><button class="btn secondary ing-del" title="Rimuovi">−</button></td>
-    `;
-    ed.ingTable.appendChild(tr);
+  addBtn.addEventListener('click', ()=> openEditor()); // nuovo
 
-    // bind
-    wireAutoKcalInputs(tr);
-    tr.querySelector('.ing-del').addEventListener('click', ()=>{ tr.remove(); recalcKcalAuto(); });
-    recalcKcalAuto();
-  }
-  ed.addIng.addEventListener('click', ()=> addIngRow());
+  (async ()=>{
+    const settings = loadSettings();
+    const allow = dietPredicate(settings);
+    const BASE = (await getRecipes()).filter(allow);
 
-  // file foto
-  ed.photo.addEventListener('change', ()=>{
-    const file = ed.photo.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e=>{
-      const img = document.createElement('img');
-      img.src = e.target.result;
-      img.style.maxWidth = '200px';
-      img.style.borderRadius = '8px';
-      ed.photoPrev.innerHTML = '';
-      ed.photoPrev.appendChild(img);
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // ingredienti -> array
-  function readIngRows(){
-    return Array.from(ed.ingTable.querySelectorAll('tr')).map(tr=>{
-      const qty  = parseFloat((tr.querySelector('.ing-qty').value || '').replace(',','.')) || 0;
-      const unit = (tr.querySelector('.ing-unit').value || 'g').trim();
-      const item = (tr.querySelector('.ing-item').value || '').trim();
-      return { qty, unit, item };
-    }).filter(r => r.item);
-  }
-
-  // kcal auto async
-  async function recalcKcalAuto(){
-    if (ed.kcalOv.checked) return;
-    const ing = readIngRows();
-    const serv = Math.max(1, +ed.serv.value || 2);
-
-    ed.kcal.value = '';
-    ed.kcal.placeholder = 'calcolo…';
-    try{
-      const { perServing } = await computeMacrosAsync(ing, serv);
-      ed.kcal.value = perServing.kcal || '';
-    }catch(e){
-      console.warn('[recipes] computeMacrosAsync error', e);
-      ed.kcal.value = '';
-    }finally{
-      ed.kcal.placeholder = 'auto';
+    function card(r, favSet, isMine=false){
+      const c = document.createElement('div');
+      c.className = 'day-card';
+      c.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px">
+          <div>
+            <div style="font-weight:600">${r.name}</div>
+            <div class="small">
+              Tag: ${(r.tags||[]).join(', ') || '—'} · Prep: ${r.prepMinutes||20} min · Porzioni: ${r.servings||2}
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center">
+            ${isMine ? `
+              <button class="btn secondary" data-edit="${r.id}">Modifica</button>
+              <button class="btn secondary" data-del="${r.id}">Elimina</button>
+            `: ''}
+            <button class="fav-btn ${favSet.has(r.id)?'active':''}" data-id="${r.id}">⭐</button>
+          </div>
+        </div>
+      `;
+      c.querySelector('.fav-btn').addEventListener('click', (e)=>{
+        const after = new Set(toggleFavorite(r.id));
+        e.currentTarget.classList.toggle('active', after.has(r.id));
+      });
+      if (isMine){
+        c.querySelector(`[data-edit="${r.id}"]`)?.addEventListener('click', ()=> openEditor(r));
+        c.querySelector(`[data-del="${r.id}"]`)?.addEventListener('click', ()=>{
+          if (!confirm('Eliminare questa ricetta?')) return;
+          const mine = loadMy().filter(x=>x.id!==r.id);
+          saveMy(mine);
+          render();
+        });
+      }
+      return c;
     }
+
+    function render(){
+      const favSet = new Set(getFavorites());
+      const mine = loadMy();
+      $list.innerHTML = '';
+
+      if (tab==='mine'){
+        if (!mine.length){ $list.innerHTML = `<div class="small">Non hai ancora ricette personali.</div>`; return; }
+        mine.forEach(r => $list.appendChild(card(r, favSet, true)));
+        return;
+      }
+
+      if (tab==='fav'){
+        const show = BASE.filter(r=>favSet.has(r.id)).concat(mine.filter(r=>favSet.has(r.id)));
+        if (!show.length){ $list.innerHTML = `<div class="small">Nessuna ricetta preferita.</div>`; return; }
+        show.forEach(r => $list.appendChild(card(r, favSet, r.id.startsWith('my_'))));
+        return;
+      }
+
+      // tutte = base + le mie
+      const show = BASE.concat(mine);
+      show.forEach(r => $list.appendChild(card(r, favSet, r.id.startsWith('my_'))));
+    }
+
+    render();
+  })();
+
+  /* ---------- Editor ricetta (overlay) ---------- */
+  function openEditor(rec=null){
+    const isEdit = !!rec;
+    const data = rec || {
+      id: uid(),
+      name: '',
+      servings: 2,
+      prepMinutes: 20,
+      kcalPerServing: 0,
+      tags: [],
+      ingredients: [{item:'', qty:0, unit:'g'}],
+      steps: []
+    };
+
+    ensureOverlay(`
+      <h2 style="margin:0 0 8px">${isEdit?'Modifica':'Nuova'} ricetta</h2>
+      <div style="display:grid; gap:10px; grid-template-columns: repeat(2, minmax(0,1fr))">
+        <div class="card">
+          <label class="small">Nome</label>
+          <input id="r_name" class="input" value="${escapeHTML(data.name)}" />
+          <div style="display:flex; gap:8px; margin-top:8px">
+            <div style="flex:1">
+              <label class="small">Porzioni</label>
+              <input id="r_serv" type="number" min="1" class="input" value="${data.servings||2}" />
+            </div>
+            <div style="flex:1">
+              <label class="small">Prep (min)</label>
+              <input id="r_prep" type="number" min="0" class="input" value="${data.prepMinutes||20}" />
+            </div>
+          </div>
+          <div style="margin-top:8px">
+            <label class="small">Tag (virgola)</label>
+            <input id="r_tags" class="input" placeholder="es. pranzo, pasta" value="${(data.tags||[]).join(', ')}" />
+          </div>
+          <div style="margin-top:8px">
+            <label class="small">Kcal/porzione (opz.)</label>
+            <input id="r_kcal" type="number" min="0" class="input" value="${data.kcalPerServing||0}" />
+          </div>
+        </div>
+
+        <div class="card">
+          <label class="small">Ingredienti</label>
+          <div id="ingList" style="display:grid; gap:6px"></div>
+          <button id="addIng" class="btn secondary" style="margin-top:8px">+ ingrediente</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:10px">
+        <label class="small">Procedimento (una riga per step)</label>
+        <textarea id="r_steps" class="input" rows="6" style="width:100%">${(data.steps||[]).join('\n')}</textarea>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:12px">
+        <button id="saveRec" class="btn">${isEdit?'Salva':'Crea'}</button>
+        <button id="cancelRec" class="btn secondary">Annulla</button>
+      </div>
+    `);
+
+    // render ingredienti
+    const $ing = document.getElementById('ingList');
+    function renderIngs(){
+      $ing.innerHTML = '';
+      (data.ingredients||[]).forEach((ing, idx)=>{
+        const row = document.createElement('div');
+        row.style.display='grid';
+        row.style.gridTemplateColumns='2fr 1fr 1fr auto';
+        row.style.gap='6px';
+        row.innerHTML = `
+          <input class="input" placeholder="ingrediente" value="${escapeHTML(ing.item||'')}" data-k="item" data-i="${idx}" />
+          <input class="input" type="number" min="0" placeholder="qty" value="${ing.qty||0}" data-k="qty" data-i="${idx}" />
+          <input class="input" placeholder="unit (g|ml|pz)" value="${escapeHTML(ing.unit||'g')}" data-k="unit" data-i="${idx}" />
+          <button class="btn secondary" data-del="${idx}">✕</button>
+        `;
+        // bind
+        row.querySelectorAll('input').forEach(inp=>{
+          inp.addEventListener('input', (e)=>{
+            const i = +e.target.dataset.i;
+            const k = e.target.dataset.k;
+            data.ingredients[i][k] = k==='qty' ? +e.target.value : e.target.value;
+          });
+        });
+        row.querySelector(`[data-del="${idx}"]`)?.addEventListener('click', ()=>{
+          data.ingredients.splice(idx,1);
+          renderIngs();
+        });
+        $ing.appendChild(row);
+      });
+    }
+    renderIngs();
+
+    document.getElementById('addIng')?.addEventListener('click', ()=>{
+      data.ingredients.push({item:'', qty:0, unit:'g'});
+      renderIngs();
+    });
+
+    document.getElementById('cancelRec')?.addEventListener('click', closeOverlay);
+    document.getElementById('saveRec')?.addEventListener('click', ()=>{
+      data.name = document.getElementById('r_name').value.trim();
+      data.servings = Math.max(1, +document.getElementById('r_serv').value || 2);
+      data.prepMinutes = Math.max(0, +document.getElementById('r_prep').value || 0);
+      data.kcalPerServing = Math.max(0, +document.getElementById('r_kcal').value || 0);
+      data.tags = (document.getElementById('r_tags').value||'').split(',').map(x=>x.trim()).filter(Boolean);
+      data.steps = (document.getElementById('r_steps').value||'').split('\n').map(x=>x.trim()).filter(Boolean);
+      if (!data.name){ alert('Inserisci un nome'); return; }
+      if (!Array.isArray(data.ingredients) || !data.ingredients.length){ alert('Aggiungi almeno un ingrediente'); return; }
+
+      const mine = loadMy();
+      const i = mine.findIndex(x=>x.id===data.id);
+      if (i>=0) mine[i]=data; else mine.push(data);
+      saveMy(mine);
+      closeOverlay();
+      // refresh lista corrente
+      const evt = new Event('click'); document.querySelector('[data-tab].active')?.dispatchEvent(evt);
+    });
   }
-  function wireAutoKcalInputs(tr){
-    tr.querySelectorAll('input').forEach(inp => inp.addEventListener('input', debounce(recalcKcalAuto, 250)));
+
+  function ensureOverlay(html){
+    let root = document.getElementById('overlay-root');
+    if (!root) { root = document.createElement('div'); root.id='overlay-root'; document.body.appendChild(root); }
+    root.innerHTML = `
+      <div style="position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index:9999; padding:16px">
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; max-width:min(950px,96vw); max-height:92vh; overflow:auto">
+          ${html}
+        </div>
+      </div>`;
+    root.addEventListener('click', (e)=>{ if (e.target === root.firstElementChild) closeOverlay(); });
   }
-  ed.serv.addEventListener('input', recalcKcalAuto);
+  function closeOverlay(){ const root=document.getElementById('overlay-root'); if (root){ root.innerHTML=''; root.remove(); } }
 
-  // salva ricetta
-  ed.save.addEventListener('click', ()=>{
-    const override = ed.kcalOv.checked;
-const kcalField = override ? (+ed.kcal.value || null) : null;
-
-const obj = {
-  id: 'r'+Date.now(),
-  name: ed.name.value.trim(),
-  tags,
-  servings: Math.max(1, +ed.serv.value || 2),
-  kcalPerServing: kcalField,             // <— null se non override
-  ingredients: readIngRows(),
-  steps: (ed.steps.value||'').split('\n').map(s=>s.trim()).filter(Boolean),
-  photo: ed.photoPrev.querySelector('img')?.src || null
-};
-  });
-
-  ed.cancel.addEventListener('click', ()=> window.location.hash = '#/planner');
-
-  // aggiungi riga iniziale
-  addIngRow();
+  function escapeHTML(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
   return el;
-}
-
-// debounce helper
-function debounce(fn, ms){
-  let t=null;
-  return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), ms); };
 }

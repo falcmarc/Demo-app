@@ -5,8 +5,9 @@
 // - Settimana: tabella; su mobile toggle Pasti ↔ Nutrienti (mini grafico per giorno)
 // - Giornaliera / 3 Giorni: card a schermo pieno con tutti i pasti del periodo
 // - Select ricette più grandi; “Dettagli” ghost; “Escludi” più piccolo
-// - Rispetta limiti tempo (Start.maxPrep) sia in generazione che selezione
-// - Lista spesa invariata, basata su plan
+// - Rispetta: dieta, allergeni, preferiti, limiti tempo
+// - Kcal arrotondate a 0 decimali in UI
+// - Lista spesa invariata
 
 import { getRecipes } from '../../data/recipes.js';
 import { loadSettings, kidFactor, dietPredicate } from '../../lib/utils.js';
@@ -14,6 +15,7 @@ import { generateBalancedWeeklyMenu } from '../../lib/balancedMenu.js';
 import { toggleFavorite, getFavorites, getRatings, setRating } from '../../lib/store.js';
 import { computeMacrosAsync } from '../../lib/nutritionService.js';
 import PieChart from '../../components/PieChart.js';
+import { recipeHasAllergen } from '../../lib/allergens.js';
 
 const DAYS  = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
 const MEALS = ['colazione','pranzo','merenda','cena'];
@@ -30,7 +32,7 @@ function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; 
 function fmtShort(d){ return d.toLocaleDateString('it-IT',{ day:'2-digit', month:'2-digit' }); }
 function fmtFull(d){ return d.toLocaleDateString('it-IT',{ weekday:'long', day:'2-digit', month:'2-digit' }); }
 
-// tempo max: generico + specifico pranzo (se abilitato)
+// tempo max: generico + specifico pranzo
 function getMaxMinutesForMeal(settings, mealKey){
   const m = settings?.maxPrep;
   if (!m) return Infinity;
@@ -78,11 +80,12 @@ function eqServings(adults, kids, kidsAges){
 export default function Planner(){
   const settings = loadSettings();
   const allow = dietPredicate(settings);
+  const allergens = settings?.allergens || [];
   let RECIPES = [];
 
   let weekStart = startOfWeek(new Date());
   let view = 'week';         // 'week' | 'tri' | 'day'
-  let weekMode = 'meals';    // 'meals' | 'nutri' (per mobile/week)
+  let weekMode = 'meals';    // 'meals' | 'nutri'
 
   const el = document.createElement('div');
   el.innerHTML = `
@@ -93,7 +96,7 @@ export default function Planner(){
           ${settings?.maxPrep ? `· Tempo max: <strong>${settings.maxPrep.default} min</strong>${settings.maxPrep.lunchEnabled?` (pranzo: <strong>${settings.maxPrep.lunch} min</strong>)`:''}` : ''}
         </div>
         <div class="view-switch">
-          <button class="chip" data-view="week">Settimana</button>
+          <button class="chip active" data-view="week">Settimana</button>
           <button class="chip" data-view="tri">3 giorni</button>
           <button class="chip" data-view="day">Oggi</button>
           <button id="prevW" class="chip" title="Periodo precedente">◀</button>
@@ -143,7 +146,9 @@ export default function Planner(){
   const $shoppingEmpty = el.querySelector('#shoppingEmpty');
 
   (async () => {
-    RECIPES = (await getRecipes()).filter(allow);
+    // carica base e filtra dieta + allergeni
+    const all = (await getRecipes()).filter(allow);
+    RECIPES = all.filter(r => !recipeHasAllergen(r, allergens));
     render();
     renderShopping();
   })();
@@ -190,32 +195,22 @@ export default function Planner(){
     navigator.clipboard.writeText(items.join('\n'));
   });
 
-  // ===== RENDER ROOT =====
   function render(){
-    // header periodo
-    if (view==='day') {
-      $weekLabel.textContent = fmtFull(new Date(weekStart));
-    } else if (view==='tri') {
-      $weekLabel.textContent = `${fmtShort(weekStart)} — ${fmtShort(addDays(weekStart,2))}`;
-    } else {
-      $weekLabel.textContent = `${fmtShort(weekStart)} — ${fmtShort(addDays(weekStart,6))}`;
-    }
+    if (view==='day') $weekLabel.textContent = fmtFull(new Date(weekStart));
+    else if (view==='tri') $weekLabel.textContent = `${fmtShort(weekStart)} — ${fmtShort(addDays(weekStart,2))}`;
+    else $weekLabel.textContent = `${fmtShort(weekStart)} — ${fmtShort(addDays(weekStart,6))}`;
 
-    // attiva chip
     el.querySelectorAll('.view-switch .chip[data-view]').forEach(b=>{
       b.classList.toggle('active', b.dataset.view===view);
     });
 
-    // render main
     $main.innerHTML = '';
     if (view==='week') renderWeek();
     else if (view==='tri') renderNDays(3);
     else renderNDays(1);
   }
 
-  // ===== WEEK VIEW =====
   function renderWeek(){
-    // mobile: toggle pasti/nutrienti
     const modeBar = document.createElement('div');
     modeBar.className = 'mode-switch';
     modeBar.style.margin = '6px 0 10px';
@@ -224,24 +219,17 @@ export default function Planner(){
       <button class="chip ${weekMode==='nutri'?'active':''}" data-mode="nutri">Vedi nutrienti</button>
     `;
     modeBar.querySelectorAll('button').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        weekMode = btn.dataset.mode;
-        renderWeek(); // re-render locale
-      });
+      btn.addEventListener('click', ()=>{ weekMode = btn.dataset.mode; renderWeek(); });
     });
     $main.appendChild(modeBar);
 
-    if (weekMode === 'nutri') {
-      renderWeekNutrients();
-      return;
-    }
+    if (weekMode === 'nutri') { renderWeekNutrients(); return; }
 
     const table = document.createElement('table');
     table.className = 'cal-table';
     const thead = document.createElement('thead');
     const tbody = document.createElement('tbody');
 
-    // header giorni
     const trH = document.createElement('tr');
     const th0 = document.createElement('th'); th0.textContent = ''; th0.style.minWidth = '120px';
     trH.appendChild(th0);
@@ -254,26 +242,22 @@ export default function Planner(){
     thead.appendChild(trH);
 
     const plan = getPlan() || (setPlan(emptyPlan()), getPlan());
-
     for (const meal of MEALS) {
       const tr = document.createElement('tr');
       const th = document.createElement('th');
       th.textContent = meal[0].toUpperCase() + meal.slice(1);
       th.style.textAlign='left';
       tr.appendChild(th);
-
       for (let dayIdx=0; dayIdx<7; dayIdx++){
         tr.appendChild(renderCell(dayIdx, meal, plan));
       }
       tbody.appendChild(tr);
     }
 
-    table.appendChild(thead);
-    table.appendChild(tbody);
+    table.appendChild(thead); table.appendChild(tbody);
     $main.appendChild(table);
   }
 
-  // settimanale: modalità nutrienti (per giorno)
   async function renderWeekNutrients(){
     const plan = getPlan() || emptyPlan();
     for (let dayIdx=0; dayIdx<7; dayIdx++){
@@ -282,13 +266,12 @@ export default function Planner(){
       dayBox.innerHTML = `
         <div>
           <div class="day-nutri-title">${DAYS[dayIdx]} · ${fmtShort(addDays(weekStart,dayIdx))}</div>
-          <div class="small">Macro per porzione media del giorno</div>
+          <div class="small">Macro medi per i pasti assegnati</div>
         </div>
         <div class="day-nutri-chart" id="chart-${dayIdx}"></div>
       `;
       $main.appendChild(dayBox);
 
-      // calcola macro medie sulle ricette del giorno
       const macros = await macrosForDay(plan[dayIdx]);
       const data = [
         { key:'Prot', value: macros.protein },
@@ -301,7 +284,6 @@ export default function Planner(){
     }
   }
 
-  // helper macro per giorno (media tra pasti “validi”)
   async function macrosForDay(dayObj){
     let sums = { protein:0, carbs:0, sugar:0, fat:0 }, n=0;
     for (const meal of MEALS){
@@ -325,7 +307,6 @@ export default function Planner(){
     };
   }
 
-  // cella singola (select + dettagli + escludi)
   function renderCell(dayIdx, meal, plan){
     const td = document.createElement('td');
     const cell = plan[dayIdx][meal];
@@ -342,9 +323,19 @@ export default function Planner(){
 
     const sel = document.createElement('select');
     sel.className = 'meal-select';
+
+    // filtra: tag pasto + tempo + no allergeni, ordina con preferiti e tempo
+    const favs = (settings.favFoods||[]).map(s=>s.toLowerCase());
     const options = RECIPES
       .filter(r=> (r.tags||[]).includes(meal))
-      .filter(r=> fitsTime(r, meal, settings));
+      .filter(r=> fitsTime(r, meal, settings))
+      .filter(r=> !recipeHasAllergen(r, allergens))
+      .sort((a,b)=>{
+        const sa = (a.ingredients||[]).some(i=>favs.some(f=> (i.item||'').toLowerCase().includes(f)));
+        const sb = (b.ingredients||[]).some(i=>favs.some(f=> (i.item||'').toLowerCase().includes(f)));
+        if (sa!==sb) return sa ? -1 : 1;
+        return (a.prepMinutes||30) - (b.prepMinutes||30);
+      });
 
     sel.innerHTML = `<option value="">— scegli —</option>` +
       options.map(r=>`<option value="${r.id}">${r.name} · ⏱ ${r.prepMinutes || 20}′</option>`).join('');
@@ -366,7 +357,6 @@ export default function Planner(){
     exChk.addEventListener('change', ()=>{
       const p = getPlan(); p[dayIdx][meal].excluded = exChk.checked; setPlan(p);
       sel.disabled = exChk.checked;
-      // re-render locale badge
       title.innerHTML = `
         <span>${DAYS[dayIdx].slice(0,3)} · ${meal}</span>
         ${exChk.checked ? `<span class="badge">· <em>escluso</em></span>` : ''}
@@ -391,14 +381,13 @@ export default function Planner(){
     return td;
   }
 
-  // ===== 1 o 3 giorni =====
   function renderNDays(n){
     const grid = document.createElement('div');
     grid.className = 'day-grid';
 
     for (let i=0;i<n;i++){
       const d = addDays(weekStart, i);
-      const idx = (d.getDay()||7)-1; // 0..6
+      const idx = (d.getDay()||7)-1;
       const plan = getPlan() || emptyPlan();
 
       const box = document.createElement('div');
@@ -409,16 +398,14 @@ export default function Planner(){
         const wrap = document.createElement('div');
         wrap.style.marginBottom = '10px';
         wrap.innerHTML = `<div class="small" style="margin-bottom:6px; color:var(--muted)">${meal[0].toUpperCase()+meal.slice(1)}</div>`;
-        // riuso della cella ma montando solo select+azioni
         const row = document.createElement('div');
         row.appendChild(renderCell(idx, meal, plan));
-        wrap.appendChild(row.firstChild); // estrai td interno
+        wrap.appendChild(row.firstChild);
         box.appendChild(wrap);
       });
 
       grid.appendChild(box);
     }
-
     $main.appendChild(grid);
   }
 
@@ -469,8 +456,8 @@ export default function Planner(){
     const { adults, kids } = countsForMeal(settings, mealKey);
     const servings = eqServings(adults, kids, settings.kidsAges);
     const factor   = (servings || 1) / (rec.servings || 2);
-    const kcalPer  = rec.kcalPerServing || null;
-    const kcalTot  = kcalPer ? Math.round(kcalPer * servings) : null;
+    const kcalPer  = rec.kcalPerServing || 0;
+    const kcalTot  = kcalPer ? Math.round(kcalPer * servings) : 0;
 
     const macros = await computeMacrosAsync(rec.ingredients || [], rec.servings || 2);
     const pieData = [
@@ -488,6 +475,9 @@ export default function Planner(){
       return `<li>${base}${src}${warn}</li>`;
     }).join('');
 
+    const kcalPerUI = Math.round(macros.perServing.kcal || kcalPer || 0);
+    const kcalTotUI = Math.round(kcalTot || 0);
+
     ensureOverlay(`
       <div style="display:flex; justify-content:space-between; align-items:center; gap:8px">
         <h2 style="margin:0">${rec.name}</h2>
@@ -496,8 +486,8 @@ export default function Planner(){
 
       <div class="small" style="margin:8px 0">
         Porzioni eq famiglia: <strong>${servings.toFixed(1)}</strong>
-        · Kcal/porz (stima): <strong>${macros.perServing.kcal || (kcalPer ?? 'n.d.')}</strong>
-        · Kcal totali (famiglia): <strong>${kcalTot ?? 'n.d.'}</strong>
+        · Kcal/porz (stima): <strong>${kcalPerUI}</strong>
+        · Kcal totali (famiglia): <strong>${kcalTotUI}</strong>
         · Prep: <strong>${rec.prepMinutes || 20} min</strong>
       </div>
 
@@ -540,7 +530,6 @@ export default function Planner(){
     });
   }
 
-  // overlay helpers
   function ensureOverlay(html){
     let root = document.getElementById('overlay-root');
     if (!root) { root = document.createElement('div'); root.id='overlay-root'; document.body.appendChild(root); }
@@ -552,18 +541,13 @@ export default function Planner(){
       </div>`;
     root.addEventListener('click', (e)=>{ if (e.target === root.firstElementChild) closeOverlay(); });
   }
-  function closeOverlay(){
-    const root = document.getElementById('overlay-root');
-    if (root) { root.innerHTML=''; root.remove(); }
-  }
+  function closeOverlay(){ const root = document.getElementById('overlay-root'); if (root) { root.innerHTML=''; root.remove(); } }
 
   return el;
 }
 
-// inietta CSS una sola volta per pagina
 function injectOnce(id, css){
   if (document.getElementById(id)) return;
-  const s = document.createElement('style');
-  s.id = id; s.textContent = css;
+  const s = document.createElement('style'); s.id = id; s.textContent = css;
   document.head.appendChild(s);
 }
